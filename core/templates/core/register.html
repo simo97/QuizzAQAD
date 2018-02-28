@@ -1,0 +1,47 @@
+{% extends 'core/layout.html' %}
+{% load static %}
+{% block custom_style %}<link href="{% static 'core/css/signin.css' %}" rel="stylesheet"> {% endblock %}
+{% block nav_menu %}
+{% endblock %}
+{% block right_nav %}
+{% endblock %}
+{% block layout %}
+<div class="container">
+    <form action="{% url 'core:register_view' %}" method="post">
+        {% csrf_token %}
+        <h2 class="form-signin-heading">Registration</h2>
+        <div class="row">
+            <div class="form-group col-lg-6">
+                <label >Email address</label>
+                <input type="email" id="inputEmail" name="email" class="form-control" placeholder="Email address" required autofocus>
+            </div>
+            <div class="form-group col-lg-6">
+                <label >Password</label>
+                <input type="password" id="inputPassword" name="password" class="form-control" placeholder="Password" required>
+            </div>
+            <div class="form-group col-lg-6">
+                <label >Re-enter Password</label>
+                <input type="password" id="inputPassword2" name="pwd" class="form-control" placeholder="Password" required>
+            </div>
+            <div class="form-group col-lg-6">
+                <label>first name</label>
+                <input class="form-control" name="first_name" type="text" />
+            </div>
+            <div class="form-group col-lg-6">
+                <label>Last name</label>
+                <input class="form-control" name="last_name" type="text" />
+            </div>
+
+            <div class="form-group col-lg-6">
+                <label>Username</label>
+                <input  class="form-control" name="username" type="text" />
+            </div>
+            <div class="form-group col-lg-6">
+                <label>Profile picture </label>
+                <input class="form-control" name="pp" type="file"  />
+            </div>
+        </div>
+        <button class="btn btn-lg btn-primary btn-block" type="submit">Register</button>
+    </form>
+</div>
+{% endblock %}

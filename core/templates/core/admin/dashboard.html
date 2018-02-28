@@ -1,0 +1,45 @@
+{% extends 'core/admin/admin_base.html' %}
+
+{% block is_active %}active{% endblock %}
+
+{% block module_title %}
+    LeaderBoard
+{% endblock %}
+
+{% block  content %}
+
+<section class="row">
+    <div class="col-md-12 table-responsive">
+        <table class="table table-bordered table-striped table-condensed">
+            <tr>
+                <th>Num</th>
+                <th>first name</th>
+                <th>Last name</th>
+                <th>Email</th>
+                <th>Actual score</th>
+            </tr>
+            {% if leader_board %}
+            {% for lead in  leader_board %}
+            <tr>
+                <td>{{ lead.id }}</td>
+                <td>{{ lead.user.first_name }}</td>
+                <td>{{ lead.user.last_name }}</td>
+                <td>{{ lead.user.email }}</td>
+                <td>{{ lead.current_score }}</td>
+            </tr>
+            {% endfor %}
+            {% else %}
+            <tr>
+                <td>No</td>
+                <td>Data</td>
+                <td>Available.</td>
+                <td>Fo</td>
+                <td>Thi month</td>
+            </tr>
+            {% endif %}
+
+        </table>
+    </div>
+</section>
+
+{% endblock %}

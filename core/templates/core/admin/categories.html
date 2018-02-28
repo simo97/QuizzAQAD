@@ -1,0 +1,44 @@
+{% extends 'core/admin/admin_base.html' %}
+
+{% block is_active_4 %}active{% endblock %}
+
+{% block module_title %}
+    Comments categories
+{% endblock %}
+
+{% block  content %}
+{% if alert %}
+<div class="row container">
+    <div  class="alert alert-danger col-lg-12" >{{ danger }}</div>
+</div>
+{% endif %}
+<section class="row">
+
+    <div class="col-md-6">
+        <h4>Categorie's list</h4>
+        <ul class="list-group">
+            {% if list_categories %}
+            {% for categorie in list_categories %}
+            <li class="list-group-item">{{ categorie.name }}</li>
+            {% endfor %}
+            {% else %}
+             No categories for the moment, you van add by usign the form at the right
+            {% endif %}
+        </ul>
+    </div>
+    <div class="col-md-6">
+        <h4>Add new Categories</h4>
+        <form action="{% url 'core:categories_add_admin_view' %}" method="post" >
+            {% csrf_token %}
+            <div class="form-group">
+                <label for="name_input">Categorie's Name</label>
+                <input type="text"  required="required" name="name" class="form-control" id="name_input" />
+            </div>
+            <div class="form-group" >
+                <button type="submit" class="btn btn-success">Add</button>
+            </div>
+        </form>
+    </div>
+</section>
+
+{% endblock %}

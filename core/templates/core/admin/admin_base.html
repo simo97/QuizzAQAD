@@ -1,0 +1,50 @@
+{% extends 'core/layout.html' %}
+{% load static %}
+
+{% block nav_title %}Dashboard Qwizz{% endblock %}
+
+
+{% block nav_menu %}
+        <ul class="navbar-nav mr-auto">
+          <li class="nav-item active">
+            <a class="nav-link" href="#">Board <span class="sr-only">(current)</span></a>
+          </li>
+        </ul>
+{% endblock %}
+
+{% block right_nav %}
+    <a class="btn btn-outline-success" target="_blank" href="{% url 'core:home' %}">View site</a>
+{% endblock %}
+
+{% block layout %}
+        <nav class="col-sm-3 col-md-2 hidden-xs-down bg-faded sidebar">
+          <ul class="nav nav-pills flex-column">
+            <li class="nav-item">
+              <a class="nav-link {% block is_active %}{% endblock%}" href="{% url 'core:dashboard_admin_view' %}">LeaderBoard <span class="sr-only">(current)</span></a>
+            </li>
+            <li class="nav-item ">
+              <a class="nav-link {% block is_active_1 %}{% endblock%}" href="{% url 'core:questions_admin_view' %}">Questions</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link {% block is_active_2 %}{% endblock%}" href="{% url 'core:students_admin_view' %}">Students</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link {% block is_active_3 %}{% endblock%}" href="{% url 'core:comments_admin_view' %}">Comments</a>
+            </li>
+              <li class="nav-item">
+              <a class="nav-link {% block is_active_4 %}{% endblock%}" href="{% url 'core:categories_admin_view' %}">Categories</a>
+            </li>
+            </li>
+              <li class="nav-item">
+              <a class="nav-link {% block is_active_5 %}{% endblock%}" href="{% url 'core:profile_admin_view' %}">My profile</a>
+            </li>
+          </ul>
+
+        </nav>
+
+        <main class="col-sm-9 offset-sm-3 col-md-10 offset-md-2 pt-3">
+          <h1>{% block module_title %}{% endblock %}</h1>
+          {% block content %} le contenu ici {% endblock %}
+
+        </main>
+{% endblock %}

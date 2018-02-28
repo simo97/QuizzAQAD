@@ -1,0 +1,39 @@
+{% extends 'core/admin/admin_base.html' %}
+
+{% block is_active_3 %}active{% endblock %}
+
+{% block module_title %}
+    User's Comments
+{% endblock %}
+
+{% block  content %}
+
+<section class="row">
+    <div class="col-md-12 table-responsive">
+        <table class="table table-bordered table-striped table-condensed">
+            <tr>
+                <th>Nun</th>
+                <th>Comments</th>
+                <th>Students</th>
+                <th>Date</th>
+                <th>Categories</th>
+            </tr>
+            {% if list_comments %}
+            {% for com in list_comments %}
+            <tr>
+                <td>{{ com.id }}</td>
+                <td>{{ com.content }}</td>
+                <td>{{ com.studend.first_name }}</td>
+                <td>{{ com.date_publish }}</td>
+                <td>{{ com.category.name }}</td>
+            </tr>
+            {% endfor %}
+            {% else %}
+                <tr colspan="5"><td>No comments for the moment</td></tr>
+            {% endif %}
+
+        </table>
+    </div>
+</section>
+
+{% endblock %}

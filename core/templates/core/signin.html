@@ -1,0 +1,30 @@
+{% extends 'core/layout.html' %}
+{% load static %}
+
+{% block custom_style %}<link href="{% static 'core/css/signin.css' %}" rel="stylesheet"> {% endblock %}
+
+
+{% block nav_menu %}
+{% endblock %}
+
+{% block right_nav %}
+{% endblock %}
+
+{% block layout %}
+<form class="form-signin" method="post" action="{% url 'core:signin_view' %}" >
+    {% csrf_token %}
+    <h2 class="form-signin-heading">Please sign in</h2>
+
+    <label for="inputEmail" class="sr-only">Email address</label>
+    <input type="text" id="inputEmail" class="form-control" name="username" placeholder="Username" required autofocus>
+
+    <label for="inputPassword" class="sr-only">Password</label>
+    <input type="password" id="inputPassword" class="form-control" name="password" placeholder="Password" required>
+
+    <div class="checkbox">
+        <label><input type="checkbox" value="remember-me"> Remember me
+          </label>
+        </div>
+    <button class="btn btn-lg btn-primary btn-block" type="submit">Sign in</button>
+</form>
+{% endblock %}

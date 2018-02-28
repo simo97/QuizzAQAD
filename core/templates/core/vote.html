@@ -1,0 +1,321 @@
+{% extends 'core/layout.html' %}
+{% load static %}
+
+{% block right_nav %}
+
+{% endblock %}
+
+{% block custom_style %}
+<link rel="stylesheet"
+  href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.5.2/animate.min.css">
+<style>
+    .navbar {
+        background-color: #55a9e0 !important;
+        height: 75px;
+    }
+
+    .contain {
+        margin-top: 20px;
+        position: relative;
+    }
+    body {
+        background-image: url(http://www.powerpointhintergrund.com/uploads/kids-background-18.jpg);
+        background-size: cover;
+        background-repeat: no-repeat;
+    }
+
+    .block {
+        width: 100%;
+        height: 50px;
+        border-radius: 25px;
+        text-align: center;
+        padding: 10px;
+        /*background-image: url('http://www.powerpointhintergrund.com/uploads/kids-background-31.jpg');*/
+        background-color: #55a9e0;
+        background-size: cover;
+        background-repeat: no-repeat;
+    }
+
+    .block:hover {
+        width: 100%;
+        height: 50px;
+        border-radius: 25px;
+        text-align: center;
+        padding: 10px;
+        /*background-image: url('http://www.powerpointhintergrund.com/uploads/kids-background-31.jpg');*/
+        background-color: #5cb85c;
+        background-size: cover;
+        background-repeat: no-repeat;
+    }
+
+    .selected{
+        width: 100%;
+        height: 50px;
+        border-radius: 25px;
+        text-align: center;
+        padding: 10px;
+        /*background-image: url('http://www.powerpointhintergrund.com/uploads/kids-background-31.jpg');*/
+        background-color: #5cb85c;
+        background-size: cover;
+        background-repeat: no-repeat;
+    }
+
+    .center {
+        margin-top: 20px;
+        margin-bottom: 20px
+        /*margin: auto;*/
+    }
+    .row_one{
+        margin-bottom: 50px
+    }
+
+    .con{
+        background-color: rgba(255,255,255,0.6);
+        margin-left: auto;
+        margin-right: auto;
+        padding: 20px;
+        margin-top: 50px;
+    }
+
+    .small_icon{
+        height: 50px;
+        width: 50px;
+        margin:auto;
+    }
+
+    .flex_hor{
+        display: flex;
+    }
+    .btn_submit{
+        width: 100%;
+        height: 40px;
+        border-radius: 25px;
+    }
+    .question_image{
+        width: 150px;
+        height: 150px;
+        margin: auto;
+    }
+</style>
+{% endblock %}
+
+{% block nav_menu %}
+        <ul class="navbar-nav mr-auto">
+          <li class="nav-item active">
+            <a class="nav-link" href="#">Board <span class="sr-only">(current)</span></a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="{% url 'core:user_profile_view' %}">Profile</a>
+          </li>
+          <li class="nav-item">
+              <a class="nav-link">ad</a>
+          </li>
+        </ul>
+{% endblock %}
+
+{% block layout %}
+        <div class="col-md-12 col-lg-12 col-xm-12 col-xs-12 con">
+            <div class="row">
+                <img src="http://www.icone-png.com/png/49/49292.png" class="small_icon" />
+            </div>
+            <div class="row ">
+                <div class="col-lg-12 col-sm-12 col-md-12">
+                    <center class="font-weight-bold"><h2>{{ question.text }} </h2></center>
+                </div>
+            </div>
+            {% if question.image_link %}
+            <div class="row ">
+                <div class="col-lg-12 col-sm-12 col-md-12">
+                    <center class="center"><image src="{{ question.image_link }}" class="question_image" /></center>
+                </div>
+            </div>
+            {% endif %}
+
+            <div class="row">
+                <div class="col-md-6 row_one">
+                    <div class="block" id="one" onclick="chooseFirst({{ choice_one.id }})">
+                        {{ choice_one }}
+                    </div>
+                </div>
+                <div class="col-md-6 row_one">
+                    <div class="block" id="second" onclick="chooseSecond({{ choice_two.id }})">
+                        {{ choice_two }}
+                    </div>
+                </div>
+            </div>
+
+            <div class="row  " >
+                <div class="col-md-6 row_one">
+                    <div class="block" id="third" onclick="chooseThird({{ choice_tree.id }})" >
+                    {{ choice_tree }}
+                    </div>
+                </div>
+                <div class="col-md-6 row_one">
+                    <div class="block" id="four" onclick="chooseLast({{ choice_four.id }})">
+                    {{ choice_four }}
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-md-12">
+                    <form action="{% url 'core:choose' %}" method="post"> {% csrf_token %}
+                        <input type="hidden" name="choice" value="" id="choice_value" />
+                        <input type="hidden" name="question_id" value="{{ question.id }}" id="question_id" />
+                        {% if allowed %}<input type="submit" class="btn btn-success btn_submit" value="submit"/>{% else %}
+                        <center class="font-weight-bold">{{ message }}</center>
+                        {% endif %}
+                    </form>
+
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-6 col-lg-6 col-xm-12 col-xs-12 ">
+            <div class="con">
+                <div class="row">
+                    <div class="col-lg-1">
+                        <img src="{% static 'core/images/trophy.png' %}" class="small_icon" />
+                    </div>
+                    <div class="col-lg-10">
+                        <center class="font-weight-bold"><h2>Leaderboard</h2></center>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-12 table-responsive">
+                        <table class="table  table-striped table-condensed">
+                            <tr>
+                                <th>Num</th>
+                                <th>Name</th>
+                                <th>Actual score</th>
+                            </tr>
+                            {% if leader_board %}
+                            {% for lead in  leader_board %}
+                            <tr>
+                                <td>{{ lead.id }}</td>
+                                <td>{{ lead.user.first_name }}</td>
+                                <td>{{ lead.current_score }}</td>
+                            </tr>
+                            {% endfor %}
+                            {% else %}
+                            <tr>
+                                <td>No</td>
+                                <td>Data</td>
+                                <td>Available.</td>
+                            </tr>
+                            {% endif %}
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-6 col-lg-6 col-xm-12 col-xs-12 ">
+            <div class="con">
+                <div class="row">
+                    <div class="col-lg-1">
+                        <img src="{% static 'core/images/002-info.png' %}" class="small_icon" />
+                    </div>
+                    <div class="col-lg-10">
+                        <center class="font-weight-bold"><h2>Question of the month</h2></center>
+                    </div>
+                </div>
+            </div>
+        </div>
+{% endblock %}
+
+{% block script_js %}
+<script>
+    var curr_selected = ''
+    var should_choose = {% if allowed %} true {% else %} false {% endif %}
+
+    $('.block').hover(function(){
+        $(this).addClass('animated  jello');
+    }, function(){
+        $(this).removeClass('animated  jello');
+    })
+
+    function chooseFirst(value){
+        if(should_choose === false ){
+            return ;
+        }// dans le cas de false  on ne fait rien
+
+        $('#one').addClass('selected')
+        $('#one').remove(' block ')
+
+        $('#second').addClass('block')
+        $('#second').remove(' selected ')
+
+        $('#third').addClass('block')
+        $('#third').remove(' selected ')
+
+        $('#four').addClass('block')
+        $('#four').remove(' selected ')
+
+        $('#choice_value').val(value);
+    }
+
+    function chooseSecond(value){
+        if(should_choose === false ){
+            return ;
+        }// dans le cas de false  on ne fait rien
+
+        $('#one').addClass('block')
+        $('#one').remove(' selected ')
+
+        $('#second').addClass('selected')
+        $('#second').remove(' block ')
+
+        $('#third').addClass('block')
+        $('#third').remove(' selected ')
+
+        $('#four').addClass('block')
+        $('#four').remove(' selected ')
+
+        $('#choice_value').val(value);
+    }
+
+    function chooseThird(value){
+        if(should_choose === false ){
+            return ;
+        }// dans le cas de false  on ne fait rien
+
+        $('#one').addClass('block')
+        $('#one').remove(' selected ')
+
+        $('#second').addClass('block')
+        $('#second').remove(' selected ')
+
+        $('#third').addClass('selected')
+        $('#third').remove(' block  ')
+
+        $('#four').addClass('block')
+        $('#four').remove(' selected ')
+
+        $('#choice_value').val(value);
+    }
+
+    function chooseLast(value){
+        if(should_choose === false ){
+            return ;
+        }// dans le cas de false  on ne fait rien
+
+        $('#one').addClass('block')
+        $('#one').remove(' selected ')
+
+        $('#second').addClass('block')
+        $('#second').remove(' selected ')
+
+        $('#third').addClass('block')
+        $('#third').remove(' selected ')
+
+        $('#four').addClass('selected')
+        $('#four').remove(' block ')
+
+        $('#choice_value').val(value);
+    }
+
+
+</script>
+{% endblock %}
+

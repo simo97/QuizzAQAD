@@ -1,0 +1,118 @@
+{% extends 'core/admin/admin_base.html' %}
+
+{% block is_active_1 %}active{% endblock %}
+
+{% block modal %}
+
+<div class="modal fade" id="modal_win" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+
+      <div class="modal-content">
+        <form action="{% url 'core:questions_admin_upload_view' %}" method="post" enctype="multipart/form-data" >
+            <div class="modal-header">
+                <span>Choose CSV file to upload</span>
+            </div>
+            <div class="modal-body">
+                {% csrf_token %}
+                <label>Upload </label>
+                <input type="file"  name="question_file" />
+            </div>
+            <div class="modal-footer">
+                <input type="submit" class="btn btn-primary" value="Upload" />
+            </div>
+        </form>
+      </div>
+
+  </div>
+</div>
+
+<div class="modal fade" id="modal_detail"  tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+
+      <div class="modal-content">
+            <div class="modal-header">
+                <span>Question's details</span>
+            </div>
+            <div class="modal-body container" id="modal_body">
+
+            </div>
+            <div class="modal-footer">
+            </div>
+      </div>
+
+  </div>
+</div>
+
+{% endblock %}
+
+{% block module_title %}
+<div class="row">
+    <div class="col-lg-10">Questions</div>
+    <div class="col-lg-2">
+        <button class="btn btn-success" id="btn_upload" type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModal" >
+        Upload questions
+        </button>
+    </div>
+</div>
+
+{% endblock %}
+
+{% block  content %}
+
+
+<section class="row">
+    <div class="col-md-12 table-responsive">
+        <table class="table table-bordered table-striped table-condensed">
+            <tr>
+                <th>Num</th>
+                <th>Topic</th>
+                <th>Question text </th>
+                <th>Tags</th>
+                <th>Schedule day</th>
+                <th colspan="1">Actions</th>
+            </tr>
+            {% if list_questions %}
+            {% for question in list_questions %}
+            <tr>
+                <td>{{ question.id }}</td>
+                <td>{{ question.topic }}</td>
+                <td>{{ question.text }}</td>
+                <td>{{ question.tags }}</td>
+                <td>{{ question.scheduled_day }}</td>
+                <td><button onclick="detail({{ question.id }})" class="btn btn-primary">Details</button></td>
+                <!-- td><button class="btn btn-danger">Delete</button></td -->
+            </tr>
+            {% endfor %}
+            {% else %}
+            <tr>
+                <td>No questions for the moment</td>
+            </tr>
+            {% endif %}
+
+        </table>
+    </div>
+</section>
+
+
+{% endblock %}
+
+{% block script_js %}
+<script>
+    $('#btn_upload').click(function() {
+        $('#modal_win').modal('show');
+    });
+
+    function openDetail(id){
+
+    }
+    function detail(id){
+        console.log(id)
+        var url = "{% url 'core:question_detail_view'  %}?question_id="+parseInt(id)
+        console.log(url)
+        $( "#modal_body" ).load(url, function(){
+            $('#modal_detail').modal('show');
+        });
+    }
+</script>
+
+{% endblock %}

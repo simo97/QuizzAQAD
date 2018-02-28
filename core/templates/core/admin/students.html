@@ -1,0 +1,52 @@
+{% extends 'core/admin/admin_base.html' %}
+
+{% block is_active_2 %}active{% endblock %}
+
+
+{% block module_title %}
+
+<div class="row">
+    <div class="col-lg-10">Students</div>
+    <div class=" col-lg-2"><button class="btn btn-success">Add Student</button></div>
+</div>
+{% endblock %}
+
+{% block  content %}
+
+
+<section class="row">
+    <div class="col-md-12 table-responsive">
+        <table class="table table-bordered table-striped table-condensed">
+            <tr>
+                <th>Nun</th>
+                <th>first name</th>
+                <th>Last name</th>
+                <th>Email</th>
+                <th>Actual score</th>
+                <!-- th colspan="2">Actions</th -->
+            </tr>
+            {% if list_students %}
+                {% for stud in list_students %}
+                <tr>
+                    <td>{{ stud.id }}</td>
+                    <td>{{ stud.user.first_name }}</td>
+                    <td>{{ stud.user.last_name }}</td>
+                    <td>{{ stud.user.email }}</td>
+                    <td>{{ stud }}</td>
+                    <!-- td><button class="btn btn-primary">Profile</button></td>
+                    <td><button class="btn btn-danger">Delete</button></td -->
+                </tr>
+                {% endfor %}
+            {% else %}
+            <tr>
+                <td>No student</td>
+            </tr>
+            {% endif %}
+
+        </table>
+    </div>
+</section>
+
+
+{% endblock %}
+
