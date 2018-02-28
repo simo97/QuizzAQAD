@@ -9,6 +9,7 @@ from django.http import HttpResponseRedirect
 from django.db.models import Sum
 import datetime
 import operator
+from django.http import Http404
 
 
 """
@@ -60,8 +61,11 @@ def comment(r):
 
 def ask(req):
 	"""" must load the question of the day. The question that has been schedule for today """
-	question = get_object_or_404(Question, scheduled_day=datetime.date.today())
-	list_question = get_object_or_404(Question, scheduled_day=datetime.date.today()).choicies.all()
+	try:
+		question = get_object_or_404(Question, scheduled_day=datetime.date.today())
+		list_question = get_object_or_404(Question, scheduled_day=datetime.date.today()).choicies.all()
+	except Http404:
+		return render(req, 'core/vote.html')
 	""" verify if the current user always has choose """
 	#  if req.user.student is not None else False
 	if req.user.is_authenticated:

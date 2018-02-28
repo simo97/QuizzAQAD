@@ -115,6 +115,7 @@
 
 {% block layout %}
         <div class="col-md-12 col-lg-12 col-xm-12 col-xs-12 con">
+            {% if  question %}
             <div class="row">
                 <img src="http://www.icone-png.com/png/49/49292.png" class="small_icon" />
             </div>
@@ -169,10 +170,17 @@
 
                 </div>
             </div>
+            {% else %}
+                <div class="row">
+                    <center><h2>No Question available right now !!!</h2></center>
+                </div>
+            {% endif %}
         </div>
 
         <div class="col-md-6 col-lg-6 col-xm-12 col-xs-12 ">
+
             <div class="con">
+                {% if  question %}
                 <div class="row">
                     <div class="col-lg-1">
                         <img src="{% static 'core/images/trophy.png' %}" class="small_icon" />
@@ -207,6 +215,11 @@
                         </table>
                     </div>
                 </div>
+                {% else %}
+                <div class="row">
+                    <center><h2>No data available right now !!!</h2></center>
+                </div>
+                {% endif %}
             </div>
         </div>
 
