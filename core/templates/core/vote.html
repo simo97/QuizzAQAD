@@ -101,15 +101,28 @@
 
 {% block nav_menu %}
         <ul class="navbar-nav mr-auto">
+            {% if user.is_staff %}
           <li class="nav-item active">
-            <a class="nav-link" href="#">Board <span class="sr-only">(current)</span></a>
+            <a class="nav-link" href="{% url 'core:dashboard_admin_view' %}">Board <span class="sr-only">(current)</span></a>
           </li>
-          <li class="nav-item">
-            <a class="nav-link" href="{% url 'core:user_profile_view' %}">Profile</a>
-          </li>
-          <li class="nav-item">
-              <a class="nav-link">ad</a>
-          </li>
+            {% endif %}
+
+
+            {% if user.is_authenticated  %}
+            <li class="nav-item">
+                <a class="nav-link" href="#{% url 'core:user_profile_view' %}">Profile</a>
+              </li>
+            <li class="nav-item">
+                <a class="nav-link" href="{% url 'core:logout_view' %}">Log out</a>
+            </li>
+            {% else %}
+            <li class="nav-item">
+                <a class="nav-link" href="{% url 'core:signin_view' %}">Sign In</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="{% url 'core:register_view' %}">Join Us</a>
+            </li>
+            {% endif %}
         </ul>
 {% endblock %}
 

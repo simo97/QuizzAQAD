@@ -158,8 +158,9 @@ def register(req):
 
 
 @login_required
-def logout(req):
+def logout_user(req):
 	logout(req)
+	return HttpResponseRedirect(reverse('core:home'))
 
 
 def error(req):

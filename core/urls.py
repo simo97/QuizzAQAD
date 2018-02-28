@@ -11,6 +11,7 @@ urlpatterns = [
 	url(r'^home/$', views.home, name='login_user'),
 	url(r'^profile/$', views.profile, name='user_profile_view'),
 	url(r'^login/$', views.siginn, name='signin_view'),
+	url(r'^logout/$',views.logout_user, name='logout_view'),
 	url(r'^registration/$', views.register, name='register_view'),
 	url(r'^error/$',views.error, name='error_view'),
 	url(r'^dashboard/$', admin_views.dashboard, name='dashboard_admin_view'),
