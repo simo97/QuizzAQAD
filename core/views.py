@@ -116,6 +116,18 @@ def ask(req):
 	""" verify if the current user always has choose """
 	#  if req.user.student is not None else False
 	if req.user.is_authenticated:
+
+		if req.user.is_staff:
+			return render(req, 'core/vote.html', {
+				'question': question,
+				'choice_one': list_question[0],
+				'choice_two': list_question[1],
+				'choice_tree': list_question[2],
+				'choice_four': list_question[3],
+				'leader_board': leaderboard_generator_v2()[:5],
+				'allowed': False,
+				'message': "An admin cannot respond to question"
+			})
 		student = req.user.student
 		c = NotationHistory.objects.filter(question=question, student=student).count()
 		allowed = True if c == 0 else False
