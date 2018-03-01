@@ -1,6 +1,13 @@
 from django.db import models
 from django.contrib.auth.models import User
 import datetime
+import string
+import random
+
+
+def id_generator(size=10, chars=string.ascii_uppercase + string.digits):
+	return ''.join(random.choice(chars) for _ in range(size))
+
 # Create your models here.
 
 
@@ -14,6 +21,8 @@ class Question(models.Model):
 	topic = models.CharField(max_length=255)
 	tags = models.CharField(max_length=255)
 	scheduled_day = models.DateField(verbose_name="Day of month for the question")
+	likes = models.IntegerField(default=0)
+	dislikes = models.IntegerField(default=0)
 
 	def __str__(self):
 		return self.text
@@ -30,13 +39,15 @@ class Choice(models.Model):
 
 
 class Student(models.Model):
-	referral_link = models.UUIDField(editable=False, verbose_name='referral_link',null=True)
+	referral_link = models.CharField(editable=False, max_length=100,verbose_name='referral_link',default=id_generator(100))
 	picture = models.CharField(max_length=40, null=True)
-	referrer_students = models.ForeignKey('self', on_delete=models.DO_NOTHING,null=True)
+	referrer_students = models.ManyToManyField('self',related_name='follower')
 	user = models.OneToOneField(User,on_delete=models.CASCADE)
 	current_score = models.IntegerField(blank=True, null=True,default=0)
 	last_year_vote = models.IntegerField(default=datetime.date.today().year)
 	last_month_vote = models.IntegerField(default=datetime.date.today().month)
+	_is_active = models.BooleanField(default=False)
+	_validation_str = models.CharField(editable=False, max_length=100, verbose_name='Validation string', default=id_generator(100))
 
 	def __str__(self):
 		return self.user.first_name

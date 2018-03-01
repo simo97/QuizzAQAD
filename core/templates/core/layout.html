@@ -24,7 +24,7 @@
       <button class="navbar-toggler navbar-toggler-right hidden-lg-up" type="button" data-toggle="collapse" data-target="#navbarsExampleDefault" aria-controls="navbarsExampleDefault" aria-expanded="false" aria-label="Toggle navigation">
         <span class="navbar-toggler-icon"></span>
       </button>
-      <a class="navbar-brand" href="#">{% block nav_title %}Qwizz{% endblock %}</a>
+      <a class="navbar-brand" href="{% url 'core:home' %}">{% block nav_title %}Qwizz{% endblock %}</a>
 
       <div class="collapse navbar-collapse" id="navbarsExampleDefault">
         {% block nav_menu %}
@@ -62,6 +62,7 @@
     <!-- Placed at the end of the document so the pages load faster -->
     <script src="{% static 'core/js/jquery-3.2.1.min.js' %} " ></script>
     <script src="{% static 'core/js/bootstrap.min.js' %}"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.4.0/Chart.min.js"></script>
     <!-- IE10 viewport hack for Surface/desktop Windows 8 bug -->
     <script src="{% static 'core/js/ie10-viewport-bug-workaround.js' %}"></script>
     {% block script_js %} {% endblock %}
