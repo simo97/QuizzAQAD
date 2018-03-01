@@ -1,23 +1,47 @@
 from django.shortcuts import render, get_object_or_404, reverse
-from core.models import Student, Question, Choice, NotationHistory
+from core.models import Student, Question, Choice, NotationHistory,id_generator, Categorie, Comment
 from django.contrib.auth.models import User
 # Create your views here. API are here
 from django.contrib.auth import authenticate, login, logout
 from django.shortcuts import redirect
 from django.contrib.auth.decorators import login_required
-from django.http import HttpResponseRedirect
+from django.http import HttpResponseRedirect, HttpResponse
 from django.db.models import Sum
 import datetime
 import operator
 from django.http import Http404
+from django.core.files.storage import FileSystemStorage
+from django.core.exceptions import ObjectDoesNotExist
 
 
+# todo : organize question to be displayed randomly
+# todo : add chart in dashboard to allow admin to see question's result
+# todo : add question assets like ( like/dislike , topic ...)
+# todo : add about page ( front and back end )
+# todo : add comment oage ( front only )
+# todo : add follow student page
+# todo : fix pp upload
+# todo : add icons on button
+# todo : add a place to edit content of about ( markdown )
+# todo : check the leaderboard algorithm
+# todo : check question of the month algorithm
+# todo : add success message after operations
 """
  To generate the leaderboard we should:
  1) get all the user who has made choice in the current month
  2) put all ther notation history object of the month in a dictionary { 'user' : [sum_of_month_notation]} populating by user's id
  3) sort all the dictionnary for displaying
 """
+
+
+def handle_upload(req):
+	if req.FILES:
+		picture = req.FILES['picture']
+		fs = FileSystemStorage()
+		filename = fs.save(id_generator(20) + "."+picture.name.split('.')[-1], picture)
+		return  fs.url(filename)
+	else:
+		return ''
 
 
 def generate_leaderbard():
@@ -47,6 +71,20 @@ def leaderboard_generator_v2():
 	return Student.objects.filter(last_month_vote=datetime.date.today().month, last_year_vote=datetime.date.today().year).order_by('-current_score')
 
 
+def like_question(req,id):
+	q = Question.objects.get(pk=id)
+	q.likes += 1
+	q.save()
+	return HttpResponse(q.likes)
+
+
+def dislike_question(req,id):
+	q = Question.objects.get(pk=id)
+	q.dislikes += 1
+	q.save()
+	return HttpResponse(q.dislikes)
+
+
 def home(req):
 	return render(req, 'core/home.html')
 
@@ -56,6 +94,15 @@ def about(r):
 
 
 def comment(r):
+	if r.method == 'GET':
+		return render(r, 'core/comments.html',{'categories': Categorie.objects.all()})
+	elif r.method == 'POST':
+		Comment.objects.create(
+			content=r.POST['content'],
+			category=Categorie.objects.get(pk=r.POST['cat_id']),
+			studend=r.user.student
+		)
+		return HttpResponseRedirect(reverse('core:home'))
 	pass
 
 
@@ -122,12 +169,20 @@ def siginn(req):
 		return render(req,'core/signin.html')
 	else:
 		u = authenticate(username=req.POST['username'], password=req.POST['password'])
-		if u is not None:
-			login(request=req,user=u)
-			return HttpResponseRedirect(reverse('core:home'))  # to the vote UI
+		if u is not None:  # here we know that he is a user
+			try:
+				s = u.student
+				if s._is_active:
+					login(request=req, user=u)
+					return HttpResponseRedirect(reverse('core:home'))  # to the vote UI
+				else:
+					return HttpResponseRedirect(reverse('core:signin_view'))  # the student is not yet active
+			except ObjectDoesNotExist:  # in this case it is an admin
+				login(request=req, user=u)
+				return HttpResponseRedirect(reverse('core:dashboard_admin_view'))
 		else:
 			req.message = 'Credentials incorrect !!!'
-			return redirect(reverse('core:signin_view'))  # to the signin view
+			return HttpResponseRedirect(reverse('core:signin_view'))  # to the signin view
 
 
 def profile(req):
@@ -157,6 +212,60 @@ def register(req):
 	pass
 
 
+def registration_with_mail(req):
+	if req.method == "GET":
+		return render(req, 'core/register.html')
+	else:
+		user = User.objects.create_user(
+			username=req.POST['username'],
+			email=req.POST['email'],
+			password=req.POST['password'],
+			first_name=req.POST['first_name'],
+			last_name=req.POST['last_name']
+		)
+		user.save()
+		picture_link = ''
+		if req.FILES:
+			picture = req.FILES['picture']
+			fs = FileSystemStorage()
+			filename = fs.save(id_generator(20)+".".picture.name.split('.')[-1], picture)
+			picture_link = fs.url(filename)
+		else:
+			picture_link = ""
+		student = Student.objects.create(picture=picture_link,user=user)
+		student.save()
+		link_url = req.META['SERVER_NAME']+reverse('core:validate_account', kwargs={'validation_str': student._validation_str})
+		""" send mail here to ask for account validation """
+		user.email_user('You account has bee saved','You have to follow the next link : '+link_url+' to activate you account', from_email='simoadonis@gmail.com')
+		return render(req, 'core/validity_mail_sended.html')
+
+
+def account_activation(req,validation_str):
+	try:
+		student = Student.objects.get(_validation_str=validation_str)
+		student._is_active = True
+		student.save()
+		user = student.user
+		login(req, user)
+		return HttpResponseRedirect(reverse('core:home'))
+	except ObjectDoesNotExist:
+		return render(req, 'core/validation_fail', {'reason': 'Unable to find student information'})
+
+
+@login_required
+def get_profile(req):
+	try:
+		student = req.user.student
+		user = req.user
+		return render(req, 'core/profile.html', {
+			'student': student,
+			'user': user,
+			'my_link': req.META['SERVER_NAME']+reverse('core:validate_account', kwargs={'validation_str': student._validation_str})
+		})
+	except ObjectDoesNotExist:
+		return render(req, 'core/404.html',)
+
+
 @login_required
 def logout_user(req):
 	logout(req)
@@ -165,3 +274,34 @@ def logout_user(req):
 
 def error(req):
 	return render(req,'core/error.html')
+
+
+def check_exist(request,value):
+	return True if request.POST[value] else False
+
+
+@login_required
+def edit_profile(req):
+	"""
+	:param req:
+	:return:
+	"""
+	#todo-me :verify the form error to be displayed
+	student = req.user.student
+	user = req.user
+	student.picture = handle_upload(req)
+	if check_exist(req,'first_name'):
+		user.first_name = req.POST['first_name']
+	if check_exist(req, 'last_name'):
+		user.last_name = req.POST['last_name']
+	if check_exist(req, 'email'):
+		user.email = req.POST['email']
+	if check_exist(req, 'username'):
+		user.username = req.POST['username']
+	if check_exist(req, 'password'):
+		if req.POST['password'] != req.POST['re_password']:
+			return HttpResponseRedirect(reverse('core:user_profile_view'))
+		user.set_password(req.POST['last_name'])
+	student.save()
+	user.save()
+	return HttpResponseRedirect(reverse('core:user_profile_view'))

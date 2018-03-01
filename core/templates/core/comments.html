@@ -109,6 +109,12 @@
 </style>
 {% endblock %}
 
+{% block right_nav %}
+        <form class="form-inline mt-2 mt-md-0">
+
+        </form>
+{% endblock %}
+
 {% block nav_menu %}
         <ul class="navbar-nav mr-auto">
             {% if user.is_staff %}
@@ -120,9 +126,9 @@
 
             {% if user.is_authenticated  %}
             <li class="nav-item">
-                <a class="nav-link active" href="{% url 'core:user_profile_view' %}">Profile</a>
+                <a class="nav-link" href="{% url 'core:user_profile_view' %}">Profile</a>
               </li>
-            <li class="nav-item ">
+            <li class="nav-item active">
                 <a class="nav-link" href="{% url 'core:submit_comment' %}">Comments</a>
               </li>
             <li class="nav-item">
@@ -142,85 +148,41 @@
 {% block layout %}
 <div class="contained">
     <div class=" col-lg-12">
-        <h1>My profile</h1>
+        <h1>Leave a comment</h1>
     </div>
-<form action="{% url 'core:edit_profile' %}" method="post" enctype="multipart/form-data">{% csrf_token %}
-    <div class="col-lg-12  " >
-        <div class="form-group row">
-            <div class="col-lg-6">
-                  <img class="pp" src="{{ student.picture }}" name="picture" alt="{{ user.first_name }}'s profile image" />
-            </div>
-            <div class="col-lg-6">
-                <input type="file" />
+    <form action="{% url 'core:submit_comment' %}" method="post">{% csrf_token %}
+        <div class="col-lg-12  " >
+            <div class="form-group row">
+                <div class="col-lg-2">
+                      <label>Category</label>
+                </div>
+                <div class="col-lg-10">
+                    <select name="cat_id" class="form-control">
+                        {% if categories %}
+                        {% for cat in categories %}
+                        <option value="{{ cat.id }}" >{{ cat.name }}</option>
+                        {% endfor %}
+                        {% else %}
+                        <option>No categories available for now</option>
+                        {% endif %}
+                    </select>
+                </div>
             </div>
         </div>
-    </div>
-    <div class="col-lg-12 ">
-        <div class="form-group row">
-            <div class="col-lg-6 col-md-6">
-                <input class="form-control" type="text" placeholder="First name" name="first_name" value="{{ user.first_name }}" />
-            </div>
-            <div class="col-lg-6 col-md-6">
-                <input class="form-control" type="text" placeholder="Last name" name="last_name" value="{{ user.last_name }}" />
-            </div>
-        </div>
-    </div>
-    <div class="col-lg-12 ">
-        <div class="form-group row">
-            <div class="col-lg-6 col-md-6">
-                <input class="form-control" type="text" placeholder="E-mail" name="email" value="{{ user.email }}" />
-            </div>
-            <div class="col-lg-6 col-md-6">
-                <input class="form-control" type="text" placeholder="Username" name="username" value="{{ user.username }}" />
+        <div class="col-lg-12 ">
+            <div class="form-group row">
+                <div class="col-lg-2 col-md-2">
+                    <label>Comment</label>
+                </div>
+                <div class="col-lg-10 col-md-10">
+                    <textarea name="content" class="form-control" ></textarea>
+                </div>
             </div>
         </div>
-    </div>
-    <div class="col-lg-12 ">
-        <div class="form-group row" >
-            <div class="col-lg-6 col-md-6">
-                <input class="form-control" type="password" placeholder="Password" name="password"  />
-            </div>
-            <div class="col-lg-6 col-md-6">
-                <input class="form-control" type="password" placeholder="Password (validation)" name="re_password" />
-            </div>
+        <div class="col-lg-12">
+            <input type="submit" class="btn btn-success btn_submit" value="Comment" />
         </div>
-    </div>
-    <div class="col-lg-12">
-        <div class="alert alert-success ">
-            <span>My actual score :</span> {{ student.current_score }}
-        </div>
-
-    </div>
-    <div class="col-lg-12 ">
-        <div class="form-group row">
-            <div class="col-lg-12">
-                My referal link : <input class="form-control" contenteditable="false" type="text" placeholder="referral link" value="{{ my_link }}" />
-            </div>
-        </div>
-    </div>
-    <div class="col-lg-12 ">
-        <div class="form-group row">
-            <div class="col-lg-4">
-                My referral ( the students following me )
-            </div>
-            <div class="col-lg-8">
-                <ul class="list-group">
-                    <li class="list-group-item active ">Referrals</li>
-                    {% if student.referrer_students %}
-                    {% for ref in student.follower %}
-                    <li class="list-group-item">{{ ref.referrer_students.user.first_name }} {{ ref.referrer_students.user.last_name }</li>
-                    {% endfor %}
-                    {% else %}
-                        <li class="list-group">No referral yep</li>
-                    {% endif %}
-                </ul>
-            </div>
-        </div>
-    </div>
-    <div class="col-lg-12">
-        <input type="submit" class="btn btn-success btn_submit" />
-    </div>
-</form>
+    </form>
 </div>
 
 {% endblock %}

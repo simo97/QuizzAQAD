@@ -6,6 +6,9 @@
     User's Comments
 {% endblock %}
 
+
+
+
 {% block  content %}
 
 <section class="row">
@@ -23,7 +26,7 @@
             <tr>
                 <td>{{ com.id }}</td>
                 <td>{{ com.content }}</td>
-                <td>{{ com.studend.first_name }}</td>
+                <td>{{ com.studend.user.first_name }}</td>
                 <td>{{ com.date_publish }}</td>
                 <td>{{ com.category.name }}</td>
             </tr>

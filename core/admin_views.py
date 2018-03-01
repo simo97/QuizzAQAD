@@ -32,7 +32,7 @@ def dashboard(request):
 @login_required
 def questions(request):
 	return render(request, 'core/admin/questions.html',{
-		'list_questions': Question.objects.all()
+		'list_questions': Question.objects.all().order_by('-id')
 	})
 
 
@@ -93,7 +93,11 @@ def detail_question(req):
 	l = q.choicies.all()
 	return render(req, 'core/admin/detail_question.html', {
 		'question': q,
-		'choices': l
+		'choices': l,
+		'choice_Val_1': NotationHistory.objects.filter(choice=l[0]).count(),
+		'choice_Val_2': NotationHistory.objects.filter(choice=l[1]).count(),
+		'choice_Val_3': NotationHistory.objects.filter(choice=l[2]).count(),
+		'choice_Val_4': NotationHistory.objects.filter(choice=l[3]).count(),
 	})
 
 
