@@ -23,7 +23,7 @@ def proceed():
 def line_to_question(line = []):
 	return Question(
 		text=line[1],
-		image_link=line[5],
+		image_link= line[5] if line[5] is not None else None,
 		topic = line[0],
 		tags=line[7],
 		scheduled_day=line[8]
