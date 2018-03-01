@@ -287,7 +287,7 @@
     }, function(){
         $(this).removeClass('animated  rubberBand');
     })
-
+    {% if  question %}
     function like(){
         $.get('{% url 'core:like_question' question.id %}', function(data){
             $('#nbr_like').html(data);
@@ -299,6 +299,7 @@
             $('#nbr_dislike').html(data);
         });
     }
+    {% endif %}
 
     function chooseFirst(value){
         if(should_choose === false ){
