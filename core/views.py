@@ -126,7 +126,8 @@ def ask(req):
 				'choice_four': list_question[3],
 				'leader_board': leaderboard_generator_v2()[:5],
 				'allowed': False,
-				'message': "An admin cannot respond to question"
+				'message': "An admin cannot respond to question",
+				'link_len': len(question.image_link)
 			})
 		student = req.user.student
 		c = NotationHistory.objects.filter(question=question, student=student).count()
@@ -140,7 +141,8 @@ def ask(req):
 			'choice_four': list_question[3],
 			'leader_board': leaderboard_generator_v2()[:5],
 			'allowed': allowed,
-			'message': message
+			'message': message,
+			'link_len': len(question.image_link)
 		})
 	else:
 		allowed = False,
@@ -153,7 +155,8 @@ def ask(req):
 			'choice_four': list_question[3],
 			'leader_board': leaderboard_generator_v2()[:5],  # the 5 first of the list
 			'allowed': allowed,
-			'message': message
+			'message': message,
+			'link_len': len(question.image_link)
 		})
 
 
