@@ -271,7 +271,7 @@ def registration_with_mail(req):
 
 		message = render_to_string('core/mail_template.html',ctx)
 		#  message.subtype('html')
-		msg = EmailMessage('Account activation mail',message, from_email='simoadonis@gmail.com',to=[user.email])
+		msg = EmailMessage('Account activation mail',message,to=[user.email])
 		#  user.email_user('Account activation mail',message, from_email='simoadonis@gmail.com')
 		msg.content_subtype = "html"
 		msg.send()
