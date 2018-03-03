@@ -8,13 +8,27 @@
     <meta name="author" content="">
     <link rel="icon" href="../../favicon.ico">
 
-    <title>Dashboard Template for Bootstrap</title>
+    <title>{% block title %}Dashboard Template for Bootstrap{% endblock %}</title>
 
     <!-- Bootstrap core CSS -->
     <link href="{% static 'core/css/bootstrap.min.css' %} " rel="stylesheet">
 
     <!-- Custom styles for this template -->
     <link href="{% static 'core/css/dashboard.css' %}" rel="stylesheet">
+    <style>
+      .footer {
+          position:absolute;
+          left: 0;
+          bottom: 0;
+          width: 100%;
+          height: 100px;
+          background-color: #55a9e0;
+          color: white;
+          text-align: center;
+          margin-top: 20px;
+      }
+    </style>
+    {% block script_js_head %}{% endblock %}
     {% block custom_style %} {% endblock %}
   </head>
 
@@ -43,7 +57,9 @@
           </li>
         </ul>
         {% endblock %}
+
         {% block right_nav %}
+
         <form class="form-inline mt-2 mt-md-0">
           <input class="form-control mr-sm-2" type="text" placeholder="Search">
           <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
@@ -56,6 +72,7 @@
       {% endblock %}
 
     </div>
+
 
     <!-- Bootstrap core JavaScript
     ================================================== -->

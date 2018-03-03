@@ -7,6 +7,8 @@ def proceed():
 	with open('upload.csv') as csvfile:
 		readCSV = csv.reader(csvfile,delimiter = ',')
 		for row in readCSV:
+			if (len(row) != 9):
+				raise IndexError
 			data_tab.append(row) # adding to data tab for futher usage
 	print(data_tab)
 	for line in data_tab:
@@ -23,7 +25,7 @@ def proceed():
 def line_to_question(line = []):
 	return Question(
 		text=line[1],
-		image_link= line[5] if line[5] is not None else None,
+		image_link= line[6] if line[6] is not None else None,
 		topic = line[0],
 		tags=line[7],
 		scheduled_day=line[8]

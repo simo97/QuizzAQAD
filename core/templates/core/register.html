@@ -1,14 +1,48 @@
 {% extends 'core/layout.html' %}
 {% load static %}
 {% block custom_style %}<link href="{% static 'core/css/signin.css' %}" rel="stylesheet"> {% endblock %}
+
 {% block nav_menu %}
+<ul class="navbar-nav mr-auto">
+            {% if user.is_staff %}
+          <li class="nav-item ">
+            <a class="nav-link" href="{% url 'core:dashboard_admin_view' %}">Board <span class="sr-only">(current)</span></a>
+          </li>
+            {% endif %}
+            {% if user.is_authenticated  %}
+            <li class="nav-item">
+                <a class="nav-link" href="{% url 'core:user_profile_view' %}">Profile</a>
+              </li>
+            <li class="nav-item ">
+                <a class="nav-link" href="{% url 'core:submit_comment' %}">Comments</a>
+              </li>
+
+            {% endif %}
+            <li class="nav-item">
+                <a class="nav-link active" href="{% url 'core:about_view' %}">About</a>
+              </li>
+        </ul>
 {% endblock %}
+
 {% block right_nav %}
+{% if user.is_authenticated  %}
+    <li class="nav-item">
+                <a class="nav-link" href="{% url 'core:logout_view' %}">Log out</a>
+            </li>
+{% else %}
+            <li class="nav-item">
+                <a class="nav-link" href="{% url 'core:signin_view' %}">Sign In</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="{% url 'core:register_view' %}">Join Us</a>
+            </li>
+            {% endif %}
+
 {% endblock %}
 
 {% block layout %}
 <div class="container">
-    <form action="{% url 'core:register_view' %}" method="post">
+    <form action="{% url 'core:register_mail' %}" method="post" enctype="multipart/form-data">
         {% csrf_token %}
         <h2 class="form-signin-heading">Registration</h2>
         <div class="row">
@@ -39,7 +73,7 @@
             </div>
             <div class="form-group col-lg-6">
                 <label>Profile picture </label>
-                <input class="form-control" name="pp" type="file"  />
+                <input class="form-control" name="picture" type="file"  />
             </div>
         </div>
         <button class="btn btn-lg btn-primary btn-block" type="submit">Register</button>

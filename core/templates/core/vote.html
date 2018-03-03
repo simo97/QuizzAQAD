@@ -113,6 +113,11 @@
         height: 40px;
         width: 40px;
     }
+    .pp{
+        height: 50px;
+        width: 50px;
+        border-radius: 25px;
+    }
 
 </style>
 {% endblock %}
@@ -133,6 +138,9 @@
               </li>
 
             {% endif %}
+            <li class="nav-item">
+                <a class="nav-link" href="{% url 'core:about_view' %}">About</a>
+              </li>
         </ul>
 {% endblock %}
 
@@ -227,14 +235,14 @@
                     <div class="col-md-12 table-responsive">
                         <table class="table  table-striped table-condensed">
                             <tr>
-                                <th>Num</th>
+                                <th>Image</th>
                                 <th>Name</th>
                                 <th>Actual score</th>
                             </tr>
                             {% if leader_board %}
                             {% for lead in  leader_board %}
                             <tr>
-                                <td>{{ lead.id }}</td>
+                                <td><img class="pp" src="{{ lead.picture }}" alt="picture"></td>
                                 <td>{{ lead.user.first_name }}</td>
                                 <td>{{ lead.current_score }}</td>
                             </tr>
@@ -257,7 +265,7 @@
             </div>
         </div>
 
-        <div class="col-md-6 col-lg-6 col-xm-12 col-xs-12 ">
+        <!-- div class="col-md-6 col-lg-6 col-xm-12 col-xs-12 ">
             <div class="con">
                 <div class="row">
                     <div class="col-lg-1">
@@ -268,7 +276,7 @@
                     </div>
                 </div>
             </div>
-        </div>
+        </div -->
 {% endblock %}
 
 {% block script_js %}

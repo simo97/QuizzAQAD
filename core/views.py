@@ -1,5 +1,6 @@
 from django.shortcuts import render, get_object_or_404, reverse
-from core.models import Student, Question, Choice, NotationHistory,id_generator, Categorie, Comment
+from django.template.loader import render_to_string
+from core.models import Student, Question, Choice, NotationHistory,id_generator, Categorie, Comment, Setting
 from django.contrib.auth.models import User
 # Create your views here. API are here
 from django.contrib.auth import authenticate, login, logout
@@ -12,7 +13,7 @@ import operator
 from django.http import Http404
 from django.core.files.storage import FileSystemStorage
 from django.core.exceptions import ObjectDoesNotExist
-
+import random
 
 # todo : organize question to be displayed randomly
 # todo : add chart in dashboard to allow admin to see question's result
@@ -35,13 +36,10 @@ from django.core.exceptions import ObjectDoesNotExist
 
 
 def handle_upload(req):
-	if req.FILES:
-		picture = req.FILES['picture']
-		fs = FileSystemStorage()
-		filename = fs.save(id_generator(20) + "."+picture.name.split('.')[-1], picture)
-		return  fs.url(filename)
-	else:
-		return ''
+	picture = req.FILES['picture']
+	fs = FileSystemStorage()
+	filename = fs.save(id_generator(20) + "."+picture.name.split('.')[-1], picture)
+	return  fs.url(filename)
 
 
 def generate_leaderbard():
@@ -90,6 +88,7 @@ def home(req):
 
 
 def about(r):
+	return render(r, 'core/about.html', {'setting': Setting.objects.get(pk=1)})
 	pass
 
 
@@ -106,6 +105,10 @@ def comment(r):
 	pass
 
 
+def user_is_staff(user):
+	pass
+
+
 def ask(req):
 	"""" must load the question of the day. The question that has been schedule for today """
 	try:
@@ -115,15 +118,17 @@ def ask(req):
 		return render(req, 'core/vote.html')
 	""" verify if the current user always has choose """
 	#  if req.user.student is not None else False
+	_random_order = random.sample(range(0, 4), 4)
 	if req.user.is_authenticated:
 
 		if req.user.is_staff:
 			return render(req, 'core/vote.html', {
 				'question': question,
-				'choice_one': list_question[0],
-				'choice_two': list_question[1],
-				'choice_tree': list_question[2],
-				'choice_four': list_question[3],
+				'choice_one': list_question[_random_order[0]],
+				'choice_two': list_question[_random_order[1]],
+				'choice_tree': list_question[_random_order[2]],
+				'choice_four': list_question[_random_order[3]],
+
 				'leader_board': leaderboard_generator_v2()[:5],
 				'allowed': False,
 				'message': "An admin cannot respond to question",
@@ -135,10 +140,10 @@ def ask(req):
 		message = '' if c == 0 else 'Your choice has already been saved'
 		return render(req, 'core/vote.html', {
 			'question': question,
-			'choice_one': list_question[0],
-			'choice_two': list_question[1],
-			'choice_tree': list_question[2],
-			'choice_four': list_question[3],
+			'choice_one': list_question[_random_order[0]],
+			'choice_two': list_question[_random_order[1]],
+			'choice_tree': list_question[_random_order[2]],
+			'choice_four': list_question[_random_order[3]],
 			'leader_board': leaderboard_generator_v2()[:5],
 			'allowed': allowed,
 			'message': message,
@@ -149,10 +154,10 @@ def ask(req):
 		message = 'You need to login to choose an answer'
 		return render(req, 'core/vote.html', {
 			'question': question,
-			'choice_one': list_question[0],
-			'choice_two': list_question[1],
-			'choice_tree': list_question[2],
-			'choice_four': list_question[3],
+			'choice_one': list_question[_random_order[0]],
+			'choice_two': list_question[_random_order[1]],
+			'choice_tree': list_question[_random_order[2]],
+			'choice_four': list_question[_random_order[3]],
 			'leader_board': leaderboard_generator_v2()[:5],  # the 5 first of the list
 			'allowed': allowed,
 			'message': message,
@@ -220,7 +225,7 @@ def register(req):
 		student.save()
 		u = authenticate(username=req.POST['username'],password=req.POST['password'])
 		if u is not None:
-			login(user=u)
+			login(request=req,user=u)
 			return redirect('/')
 		else:
 			return redirect('/')
@@ -243,7 +248,7 @@ def registration_with_mail(req):
 		if req.FILES:
 			picture = req.FILES['picture']
 			fs = FileSystemStorage()
-			filename = fs.save(id_generator(20)+".".picture.name.split('.')[-1], picture)
+			filename = fs.save(id_generator(20)+"."+picture.name.split('.')[-1], picture)
 			picture_link = fs.url(filename)
 		else:
 			picture_link = ""
@@ -251,7 +256,14 @@ def registration_with_mail(req):
 		student.save()
 		link_url = req.META['SERVER_NAME']+reverse('core:validate_account', kwargs={'validation_str': student._validation_str})
 		""" send mail here to ask for account validation """
-		user.email_user('You account has bee saved','You have to follow the next link : '+link_url+' to activate you account', from_email='simoadonis@gmail.com')
+		""" prepate the mail here """
+		ctx = {
+			'setting': Setting.objects.get(pk=1),
+			'url':link_url
+		}
+
+		message = render_to_string('core/mail_template.html',ctx)
+		user.email_user('Account activation mail',message, from_email='simoadonis@gmail.com')
 		return render(req, 'core/validity_mail_sended.html')
 
 
@@ -304,7 +316,11 @@ def edit_profile(req):
 	#todo-me :verify the form error to be displayed
 	student = req.user.student
 	user = req.user
-	student.picture = handle_upload(req)
+	if req.FILES:
+		picture = req.FILES['picture']
+		fs = FileSystemStorage()
+		filename = fs.save(id_generator(20) + "." + picture.name.split('.')[-1], picture)
+		student.picture = filename
 	if check_exist(req,'first_name'):
 		user.first_name = req.POST['first_name']
 	if check_exist(req, 'last_name'):

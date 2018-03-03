@@ -59,7 +59,11 @@
 
 {% block  content %}
 
-
+{% if data_error %}
+<div class="row">
+    <div class="alert alert-danger">{{ data_error }}</div>
+</div>
+{% endif %}
 <section class="row">
     <div class="col-md-12 table-responsive">
         <table class="table table-bordered table-striped table-condensed">

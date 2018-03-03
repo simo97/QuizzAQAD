@@ -9,4 +9,5 @@ admin.site.register(Student)
 admin.site.register(Categorie)
 admin.site.register(Comment)
 admin.site.register(Month)
+admin.site.register(Setting)
 # Register your models here.

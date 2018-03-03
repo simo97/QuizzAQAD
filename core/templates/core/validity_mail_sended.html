@@ -1,5 +1,51 @@
 {% extends 'core/layout.html' %}
 
+{% block nav_menu %}
+<ul class="navbar-nav mr-auto">
+            {% if user.is_staff %}
+          <li class="nav-item ">
+            <a class="nav-link" href="{% url 'core:dashboard_admin_view' %}">Board <span class="sr-only">(current)</span></a>
+          </li>
+            {% endif %}
+            {% if user.is_authenticated  %}
+            <li class="nav-item">
+                <a class="nav-link" href="{% url 'core:user_profile_view' %}">Profile</a>
+              </li>
+            <li class="nav-item ">
+                <a class="nav-link" href="{% url 'core:submit_comment' %}">Comments</a>
+              </li>
+
+            {% endif %}
+            <li class="nav-item">
+                <a class="nav-link active" href="{% url 'core:about_view' %}">About</a>
+              </li>
+        </ul>
+{% endblock %}
+
+{% block right_nav %}
+
+{% endblock %}
+
+{% block custom_style %}
+<style>
+    .navbar {
+        background-color: #55a9e0 !important;
+        height: 75px;
+    }
+
+    .contain {
+        margin-top: 20px;
+        position: relative;
+    }
+    body {
+        background-image: url(http://www.powerpointhintergrund.com/uploads/kids-background-18.jpg);
+        background-size: cover;
+        background-repeat: no-repeat;
+    }
+
+</style>
+{% endblock %}
+
 {% block layout %}
 
 <h2>A validation mail has been sended to you mail account please check it to validate you account !!!!</h2>

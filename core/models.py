@@ -90,4 +90,11 @@ class Comment(models.Model):
 
 	def __str__(self):
 		return self.content
-	pass
+
+
+class Setting(models.Model):
+	about = models.TextField(null=True, default='About')
+	footer_left = models.TextField(null=True, default='left content')
+	footer_center=models.TextField(null=True, default='center content')
+	footer_right = models.TextField(null=True, default='right content')
+	mail = models.TextField(null=True, default='Mail template')

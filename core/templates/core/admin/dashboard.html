@@ -6,13 +6,25 @@
     LeaderBoard
 {% endblock %}
 
+{% block custom_style %}
+<style>
+
+    .pp{
+        height: 50px;
+        width: 50px;
+        border-radius: 25px;
+    }
+
+</style>
+{% endblock %}
+
 {% block  content %}
 
 <section class="row">
     <div class="col-md-12 table-responsive">
         <table class="table table-bordered table-striped table-condensed">
             <tr>
-                <th>Num</th>
+                <th>Image</th>
                 <th>first name</th>
                 <th>Last name</th>
                 <th>Email</th>
@@ -21,7 +33,7 @@
             {% if leader_board %}
             {% for lead in  leader_board %}
             <tr>
-                <td>{{ lead.id }}</td>
+                <td><img class="pp" src="{{ lead.picture }}" alt="picture"></td>
                 <td>{{ lead.user.first_name }}</td>
                 <td>{{ lead.user.last_name }}</td>
                 <td>{{ lead.user.email }}</td>
