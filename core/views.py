@@ -302,7 +302,7 @@ def get_profile(req):
 		return render(req, 'core/profile.html', {
 			'student': student,
 			'user': user,
-			'my_link': req.META['SERVER_NAME']+reverse('core:validate_account', kwargs={'validation_str': student._validation_str})
+			'my_link': req.get_host()+reverse('core:validate_account', kwargs={'validation_str': student._validation_str})
 		})
 	except ObjectDoesNotExist:
 		return render(req, 'core/404.html',)
