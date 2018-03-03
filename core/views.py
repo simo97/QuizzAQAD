@@ -294,6 +294,8 @@ def account_activation(req,validation_str):
 
 @login_required
 def get_profile(req):
+	if req.user.is_staff:
+		return HttpResponseRedirect(reverse('core:profile_admin_view'))
 	try:
 		student = req.user.student
 		user = req.user
