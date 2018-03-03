@@ -261,7 +261,7 @@ def registration_with_mail(req):
 			picture_link = ""
 		student = Student.objects.create(picture=picture_link,user=user)
 		student.save()
-		link_url = 'https://'+req.META['SERVER_NAME']+reverse('core:validate_account', kwargs={'validation_str': student._validation_str})
+		link_url = 'https://'+req.get_host()+reverse('core:validate_account', kwargs={'validation_str': student._validation_str})
 		""" send mail here to ask for account validation """
 		""" prepate the mail here """
 		ctx = {
