@@ -7,10 +7,11 @@
 <body>
 <article>
     <p>
-    {{ setting.mail }}
+    {{ setting.mail |safe }}
     </p>
 
-    <a href="{{ url }}" >Follow this link to activate you account !!! </a>
+    <a href="{{ url }}" >Follow this link to activate you account or copy it and paste in you address bar !!! </a><br>
+    {{ url }}
 </article>
 </body>
 </html>

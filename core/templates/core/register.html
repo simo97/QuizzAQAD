@@ -1,6 +1,22 @@
 {% extends 'core/layout.html' %}
 {% load static %}
-{% block custom_style %}<link href="{% static 'core/css/signin.css' %}" rel="stylesheet"> {% endblock %}
+{% block custom_style %}<link href="{% static 'core/css/signin.css' %}" rel="stylesheet">
+<style>
+.navbar {
+        background-color: #55a9e0 !important;
+        height: 75px;
+    }
+
+    .contain {
+        margin-top: 40px;
+    }
+    body {
+        background-image: url(http://www.powerpointhintergrund.com/uploads/kids-background-18.jpg);
+        background-size: cover;
+        background-repeat: no-repeat;
+    }
+</style>
+{% endblock %}
 
 {% block nav_menu %}
 <ul class="navbar-nav mr-auto">
@@ -41,7 +57,7 @@
 {% endblock %}
 
 {% block layout %}
-<div class="container">
+<div class="contain">
     <form action="{% url 'core:register_mail' %}" method="post" enctype="multipart/form-data">
         {% csrf_token %}
         <h2 class="form-signin-heading">Registration</h2>

@@ -110,9 +110,24 @@
 {% endblock %}
 
 {% block right_nav %}
-        <form class="form-inline mt-2 mt-md-0">
+{% if user.is_authenticated  %}
+<li class="nav-item">
+    <a class="nav-link  active " href="{% url 'core:user_profile_view' %}">
+        {{ request.user.username }}<span class="badge badge-success">{{ request.user.student.current_score }}</span>
+    </a>
+</li>
+    <li class="nav-item">
+        <a class="nav-link" href="{% url 'core:logout_view' %}">Log out</a>
+    </li>
+{% else %}
+            <li class="nav-item">
+                <a class="nav-link" href="{% url 'core:signin_view' %}">Sign In</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="{% url 'core:register_view' %}">Join Us</a>
+            </li>
+            {% endif %}
 
-        </form>
 {% endblock %}
 
 {% block nav_menu %}
@@ -125,15 +140,13 @@
 
 
             {% if user.is_authenticated  %}
-            <li class="nav-item">
-                <a class="nav-link" href="{% url 'core:user_profile_view' %}">Profile</a>
-              </li>
+
             <li class="nav-item active">
                 <a class="nav-link" href="{% url 'core:submit_comment' %}">Comments</a>
               </li>
             <li class="nav-item">
-                <a class="nav-link" href="{% url 'core:logout_view' %}">Log out</a>
-            </li>
+                <a class="nav-link" href="{% url 'core:about_view' %}">About</a>
+              </li>
             {% else %}
             <li class="nav-item">
                 <a class="nav-link" href="{% url 'core:signin_view' %}">Sign In</a>

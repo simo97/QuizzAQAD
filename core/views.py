@@ -12,8 +12,9 @@ import datetime
 import operator
 from django.http import Http404
 from django.core.files.storage import FileSystemStorage
-from django.core.exceptions import ObjectDoesNotExist
+from django.core.exceptions import ObjectDoesNotExist,MultipleObjectsReturned
 import random
+from django.core.mail import EmailMessage
 
 # todo : organize question to be displayed randomly
 # todo : add chart in dashboard to allow admin to see question's result
@@ -118,7 +119,10 @@ def ask(req):
 		return render(req, 'core/vote.html')
 	""" verify if the current user always has choose """
 	#  if req.user.student is not None else False
+	tags = []
 	_random_order = random.sample(range(0, 4), 4)
+	"""for tag in question.tags.spit('#'):
+		tags.append('#'+tag)"""
 	if req.user.is_authenticated:
 
 		if req.user.is_staff:
@@ -132,7 +136,8 @@ def ask(req):
 				'leader_board': leaderboard_generator_v2()[:5],
 				'allowed': False,
 				'message': "An admin cannot respond to question",
-				'link_len': len(question.image_link)
+				'link_len': len(question.image_link),
+				'tags': tags
 			})
 		student = req.user.student
 		c = NotationHistory.objects.filter(question=question, student=student).count()
@@ -147,7 +152,8 @@ def ask(req):
 			'leader_board': leaderboard_generator_v2()[:5],
 			'allowed': allowed,
 			'message': message,
-			'link_len': len(question.image_link)
+			'link_len': len(question.image_link),
+			'tags': tags
 		})
 	else:
 		allowed = False,
@@ -161,7 +167,8 @@ def ask(req):
 			'leader_board': leaderboard_generator_v2()[:5],  # the 5 first of the list
 			'allowed': allowed,
 			'message': message,
-			'link_len': len(question.image_link)
+			'link_len': len(question.image_link),
+			'tags': tags
 		})
 
 
@@ -254,7 +261,7 @@ def registration_with_mail(req):
 			picture_link = ""
 		student = Student.objects.create(picture=picture_link,user=user)
 		student.save()
-		link_url = req.META['SERVER_NAME']+reverse('core:validate_account', kwargs={'validation_str': student._validation_str})
+		link_url = 'https://'+req.META['SERVER_NAME']+reverse('core:validate_account', kwargs={'validation_str': student._validation_str})
 		""" send mail here to ask for account validation """
 		""" prepate the mail here """
 		ctx = {
@@ -263,7 +270,11 @@ def registration_with_mail(req):
 		}
 
 		message = render_to_string('core/mail_template.html',ctx)
-		user.email_user('Account activation mail',message, from_email='simoadonis@gmail.com')
+		#  message.subtype('html')
+		msg = EmailMessage('Account activation mail',message, from_email='simoadonis@gmail.com',to=[user.email])
+		#  user.email_user('Account activation mail',message, from_email='simoadonis@gmail.com')
+		msg.content_subtype = "html"
+		msg.send()
 		return render(req, 'core/validity_mail_sended.html')
 
 
@@ -275,8 +286,10 @@ def account_activation(req,validation_str):
 		user = student.user
 		login(req, user)
 		return HttpResponseRedirect(reverse('core:home'))
+	except MultipleObjectsReturned:
+		return render(req, 'core/validation_fail.html', {'reason': 'There is more than one user with this code. Have you shared you code with someone ?'})
 	except ObjectDoesNotExist:
-		return render(req, 'core/validation_fail', {'reason': 'Unable to find student information'})
+		return render(req, 'core/validation_fail.html', {'reason': 'Unable to find student information'})
 
 
 @login_required

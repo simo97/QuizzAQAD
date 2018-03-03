@@ -34,7 +34,7 @@
     }
 
     .contain {
-        margin-top: 50px;
+        margin-top: 25px;
     }
     body {
         background-image: url(http://www.powerpointhintergrund.com/uploads/kids-background-18.jpg);
@@ -47,8 +47,11 @@
 
 {% block layout %}
 <div class="contain">
- <h2>A validation mail has been sended to you mail account please check it to validate you account !!!!</h2>
 
-</div>
+<h2>Error during account validation</h2>
+<aside>
+    {{ reason }}
+</aside>
+    </div>
 
 {% endblock %}
