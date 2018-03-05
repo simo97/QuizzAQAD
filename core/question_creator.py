@@ -1,5 +1,6 @@
 import csv
 from core.models import Question, Choice
+from datetime import datetime as dt
 
 
 def proceed():
@@ -28,7 +29,7 @@ def line_to_question(line = []):
 		image_link= line[6] if line[6] is not None else None,
 		topic = line[0],
 		tags=line[7],
-		scheduled_day=line[8]
+		scheduled_day=dt.strptime(line[8], '%d/%m/%y')
 	)
 
 
