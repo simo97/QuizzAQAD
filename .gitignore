@@ -148,3 +148,4 @@ ENV/
 
 #database
 db.sqlite3
+quiz/staticfiles/*
