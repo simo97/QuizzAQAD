@@ -42,6 +42,8 @@ INSTALLED_APPS = [
     'core'
 ]
 
+
+
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
@@ -150,3 +152,7 @@ EMAIL_HOST_USER = config('HOST_USER')
 EMAIL_PORT = config('HOST_PORT') # 587
 EMAIL_USE_TLS = True
 DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
+
+DATE_INPUT_FORMATS = ['%d-%m-%Y']
+
+SITE_ID = 1
