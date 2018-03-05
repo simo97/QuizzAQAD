@@ -148,4 +148,6 @@ ENV/
 
 #database
 db.sqlite3
-quiz/staticfiles
+quiz/staticfiles/admin
+quiz/staticfiles/core
+quiz/staticfiles/staticfiles.json
