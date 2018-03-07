@@ -12,14 +12,14 @@ def id_generator(size=10, chars=string.ascii_uppercase + string.digits):
 
 
 class Question(models.Model):
-	text = models.CharField(max_length=255)
-	image_link = models.CharField(max_length=255)
+	text = models.TextField()
+	image_link = models.CharField(max_length=255,null=True, blank=True)
 	value = models.IntegerField()
 	date_creation = models.DateField(auto_now=True)
 	year = models.IntegerField()
 	month = models.IntegerField()
-	topic = models.CharField(max_length=255)
-	tags = models.CharField(max_length=255)
+	topic = models.CharField(max_length=255,null=True)
+	tags = models.CharField(max_length=255,null=True)
 	scheduled_day = models.DateField(verbose_name="Day of month for the question")
 	likes = models.IntegerField(default=0)
 	dislikes = models.IntegerField(default=0)

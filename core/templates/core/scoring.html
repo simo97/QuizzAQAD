@@ -32,18 +32,6 @@
         background-repeat: no-repeat;
     }
 
-    .block:hover {
-        width: 100%;
-        height: 50px;
-        border-radius: 25px;
-        text-align: center;
-        padding: 10px;
-        /*background-image: url('http://www.powerpointhintergrund.com/uploads/kids-background-31.jpg');*/
-        background-color: #5cb85c;
-        background-size: cover;
-        background-repeat: no-repeat;
-    }
-
     .selected{
         width: 100%;
         height: 50px;
@@ -54,6 +42,31 @@
         background-color: #5cb85c;
         background-size: cover;
     }
+
+    .right_choice{
+        width: 100%;
+        height: 50px;
+        border-radius: 25px;
+        text-align: center;
+        padding: 10px;
+        /*background-image: url('http://www.powerpointhintergrund.com/uploads/kids-background-31.jpg');*/
+        background-color: #d41f50;
+        background-size: cover;
+    }
+
+    /*.block:hover {
+        width: 100%;
+        height: 50px;
+        border-radius: 25px;
+        text-align: center;
+        padding: 10px;
+        /*background-image: url('http://www.powerpointhintergrund.com/uploads/kids-background-31.jpg');*/
+        background-color: #5cb85c;
+        background-size: cover;
+        background-repeat: no-repeat;
+    }*/
+
+
     .pp{
         width: 150px;
         height: 150px;
@@ -73,7 +86,6 @@
         margin-left: auto;
         margin-right: auto;
         padding: 20px;
-        margin-top: 50px;
     }
 
     .small_icon{
@@ -96,7 +108,7 @@
         margin: auto;
     }
     .contained{
-        width: 80%;
+        width: 100%;
         margin: auto;
         margin-top: 30px;
     }
@@ -106,6 +118,27 @@
         border-bottom: 1px green solid;
         border-radius: 0px 0px 10px 10px;
     }
+
+    .drop_btn{
+        border-radius: 30px;
+    }
+    #calendar {
+        max-width: 900px;
+        margin: 0 auto;
+      }
+
+    .indicator{
+        color: white;
+        padding: auto;
+        width: 200px;
+    }
+
+    .answer{
+       background-color: #d41f50;
+    }
+    .you_choice{
+       background-color: #5cb85c;
+     }
 </style>
 {% endblock %}
 
@@ -128,17 +161,17 @@
     <a class="nav-link" href="#">&nbsp</a>
 </li>
 {% else %}
-            <li class="nav-item">
-                <a class="nav-link" href="{% url 'core:signin_view' %}">Sign In</a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link" href="{% url 'core:register_view' %}">Join Us</a>
-            </li>
-            {% endif %}
+<li class="nav-item">
+    <a class="nav-link" href="{% url 'core:signin_view' %}">Sign In</a>
+</li>
+<li class="nav-item">
+    <a class="nav-link" href="{% url 'core:register_view' %}">Join Us</a>
+</li>
+{% endif %}
 
 {% endblock %}
 
-{% block title %} My profile {% endblock %}
+{% block title %} My scoring {% endblock %}
 
 {% block nav_menu %}
         <ul class="navbar-nav mr-auto">
@@ -160,87 +193,76 @@
 {% endblock %}
 
 {% block layout %}
-<div class="contained">
-    <div class=" col-lg-12">
-        <h1>My profile</h1>
-    </div>
-    <form action="{% url 'core:edit_profile' %}" method="post" enctype="multipart/form-data">{% csrf_token %}
-    <div class="col-lg-12  " >
-        <div class="form-group row">
-            <div class="col-lg-6">
-                  <img class="pp" src="{{ student.picture }}" name="picture" alt="{{ user.first_name }}'s profile image" />
-            </div>
-            <div class="col-lg-6">
-                <input type="file" />
+    <div class="contained">
+        <div class="row">
+            <div class="col-md-12">
+                <h2>My scoring statistics</h2>
             </div>
         </div>
-    </div>
-    <div class="col-lg-12 ">
-        <div class="form-group row">
-            <div class="col-lg-6 col-md-6">
-                <input class="form-control" type="text" placeholder="First name" name="first_name" value="{{ user.first_name }}" />
+        <div class="row">
+            <div class="col-md-4 col-sm-12">
+                 <div id=''>
+                     <ul class="list-group">
+                         <li class="list-group-item active  ">Question's days</li>
+                         {% if data %}
+                         {% for q in data %}
+                         <li class="list-group-item   ">
+                             <a href="#" onclick="loadQuestionData({{q.notation_id}})" style="text-decoration:none; color:black">
+                                 <div class="row">
+                                     <div class="col-lg-12">
+                                         <span>
+                                             {{ q.question | truncatewords:3 }}
+                                         </span>
+                                     </div>
+                                 </div>
+                             </a>
+                         </li>
+                         {% endfor %}
+                         {% else %}
+                         <li class="list-group-item   ">
+                             <div class="row">
+                                 <div class="col-lg-12">
+                                     <h5>Oups ! not question right now !!</h5>
+                                 </div>
+                             </div>
+                         </li>
+                         {% endif %}
+                     </ul>
+                 </div>
             </div>
-            <div class="col-lg-6 col-md-6">
-                <input class="form-control" type="text" placeholder="Last name" name="last_name" value="{{ user.last_name }}" />
+            <div id="data_contain" class="col-md-8 col-sm-12" >
+                the container here
             </div>
-        </div>
-    </div>
-    <div class="col-lg-12 ">
-        <div class="form-group row">
-            <div class="col-lg-6 col-md-6">
-                <input class="form-control" type="text" placeholder="E-mail" name="email" value="{{ user.email }}" />
-            </div>
-            <div class="col-lg-6 col-md-6">
-                <input class="form-control" type="text" placeholder="Username" name="username" value="{{ user.username }}" />
-            </div>
-        </div>
-    </div>
-    <div class="col-lg-12 ">
-        <div class="form-group row" >
-            <div class="col-lg-6 col-md-6">
-                <input class="form-control" type="password" placeholder="Password" name="password"  />
-            </div>
-            <div class="col-lg-6 col-md-6">
-                <input class="form-control" type="password" placeholder="Password (validation)" name="re_password" />
-            </div>
-        </div>
-    </div>
-    <div class="col-lg-12">
-        <div class="alert alert-success ">
-            <span>My actual score :</span> {{ student.current_score }}
         </div>
 
     </div>
-    <div class="col-lg-12 ">
-        <div class="form-group row">
-            <div class="col-lg-12">
-                My referal link : <input class="form-control" contenteditable="false" type="text" placeholder="referral link" value="{{ my_link }}" />
-            </div>
-        </div>
-    </div>
-    <div class="col-lg-12 ">
-        <div class="form-group row">
-            <div class="col-lg-4">
-                My referral ( the students following me )
-            </div>
-            <div class="col-lg-8">
-                <ul class="list-group">
-                    <li class="list-group-item active ">Referrals</li>
-                    {% if student.referrer_students %}
-                    {% for ref in student.follower %}
-                    <li class="list-group-item">{{ ref.referrer_students.user.first_name }} {{ ref.referrer_students.user.last_name }</li>
-                    {% endfor %}
-                    {% else %}
-                        <li class="list-group">No referral yep</li>
-                    {% endif %}
-                </ul>
-            </div>
-        </div>
-    </div>
-    <div class="col-lg-12">
-        <input type="submit" class="btn btn-success btn_submit" />
-    </div>
-</form>
-</div>
+{% endblock %}
 
+{% block script_js %}
+<script>
+$(document).ready(function(){
+    $('.dropdown-menu .dropdown-item ').hover(function(){
+        $(this).css('background-color: transparent;');
+        $(this).addClass('animated  pulse');
+
+    }, function(){
+        $(this).removeClass('animated  pulse');
+    })
+
+
+});
+
+function loadQuestionData(notation_id){
+        $('#data_contain').load("{% url 'core:stat_student'  %}?notation="+notation_id)
+    }
+
+
+</script>
+{% endblock %}
+
+{% block header_assets %}
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/3.9.0/fullcalendar.min.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/3.9.0/fullcalendar.print.css" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.19.1/moment.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/3.9.0/fullcalendar.min.js"></script>
 {% endblock %}
