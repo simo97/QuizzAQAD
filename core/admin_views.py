@@ -4,6 +4,9 @@ from core.models import *
 from django.http import HttpResponseRedirect
 from django.urls import reverse
 from core import question_creator as qc
+from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
+from core.forms import QuestionForm
+
 
 
 def leaderboard_generator_v2():
@@ -29,15 +32,37 @@ def dashboard(request):
 
 @login_required
 def questions(request):
+	question_list = Question.objects.all().order_by('-id')
+	page = request.GET.get('page', 1)
+	paginator = Paginator(question_list, 15)
+
+	try:
+		question_to_deliv = paginator.page(page)
+	except PageNotAnInteger:
+		question_to_deliv = paginator.page(1)
+	except EmptyPage:
+		question_to_deliv = paginator.page(paginator.num_pages)
+
 	return render(request, 'core/admin/questions.html',{
-		'list_questions': Question.objects.all().order_by('-id')
+		'list_questions': question_to_deliv
 	})
 
 
 @login_required
-def students(req):
-	return render(req, 'core/admin/students.html',{
-		'list_students': Student.objects.all()
+def students(request):
+	student_list = Student.objects.all()
+	page = request.GET.get('page', 1)
+	paginator = Paginator(student_list, 10)
+
+	try:
+		student_list = paginator.page(page)
+	except PageNotAnInteger:
+		student_list = paginator.page(1)
+	except EmptyPage:
+		student_list = paginator.page(paginator.num_pages)
+
+	return render(request, 'core/admin/students.html',{
+		'list_students': student_list
 	})
 
 
@@ -137,3 +162,22 @@ def edit_setting(req,sett):
 		setting.mail = req.POST['mail']
 	setting.save()
 	return render(req, 'core/admin/about.html',{'setting':setting})
+
+
+@login_required
+def edit_question(request):
+	if request.method == 'GET':
+		q = Question.objects.get(pk=request.GET['question'])
+		q_form = QuestionForm(instance=q)
+		return render(request, 'core/admin/edit_question.html' , {'form':q_form, 'id':q.id})
+	form = QuestionForm(request.POST)
+	if form.is_valid():
+		q = Question.objects.get(pk=request.GET['question'])
+		q.text=form.cleaned_data['text']
+		q.image_link=form.cleaned_data['image_link']
+		q.scheduled_day=form.cleaned_data['scheduled_day']
+		q.topic=form.cleaned_data['topic']
+		q.tags=form.cleaned_data['tags']
+		q.save()
+		return HttpResponseRedirect(reverse('core:questions_admin_view'))
+	return HttpResponseRedirect(reverse('core:questions_admin_view'))

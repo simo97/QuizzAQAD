@@ -1,0 +1,39 @@
+<form method="post" action="{% url 'core:edit_questions_admin_view' %}?question={{id}} ">{% csrf_token %}
+    <div class="row">
+        {{ form.non_field_errors }}
+
+      <div class="form-group col-md-12">
+          {{ form.text.errors }}
+        <label for="{{ form.text.id_for_label }}">Text</label>
+          {{ form.text }}
+      </div>
+
+      <div class="form-group col-md-6">
+          {{ form.image_link.errors }}
+        <label for="{{ form.image_link.id_for_label }}">Image</label>
+          {{ form.image_link }}
+      </div>
+
+      <div class="form-group col-md-6">
+          {{ form.scheduled_day.errors }}
+        <label for="{{ form.scheduled_day.id_for_label }}">Schedule date</label>
+        {{ form.scheduled_day }}
+      </div>
+
+      <div class="form-group col-md-6">
+          {{ form.topic.errors }}
+        <label for="{{ form.topic.id_for_label }}">Topic</label>
+          {{ form.topic }}
+      </div>
+
+        <div class="form-group col-md-6">
+            {{ form.tags.errors }}
+        <label for="{{ form.tags.id_for_label }}">Tags</label>
+            {{ form.tags }}
+      </div>
+
+    </div>
+    <div class="row">
+        <div class="col-md-12"><button type="submit" class="btn btn-primary">Submit</button></div>
+    </div>
+</form>

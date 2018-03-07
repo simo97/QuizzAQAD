@@ -6,15 +6,18 @@ from django.contrib.auth.models import User
 from django.contrib.auth import authenticate, login, logout
 from django.shortcuts import redirect
 from django.contrib.auth.decorators import login_required
-from django.http import HttpResponseRedirect, HttpResponse
+from django.http import HttpResponseRedirect, HttpResponse, JsonResponse
 from django.db.models import Sum
-import datetime
-import operator
 from django.http import Http404
 from django.core.files.storage import FileSystemStorage
 from django.core.exceptions import ObjectDoesNotExist,MultipleObjectsReturned
-import random
 from django.core.mail import EmailMessage
+import random
+import datetime
+import operator
+import json
+from datetime import datetime as dt
+
 
 # todo : organize question to be displayed randomly
 # todo : add chart in dashboard to allow admin to see question's result
@@ -121,8 +124,7 @@ def ask(req):
 	#  if req.user.student is not None else False
 	tags = []
 	_random_order = random.sample(range(0, 4), 4)
-	"""for tag in question.tags.spit('#'):
-		tags.append('#'+tag)"""
+
 	if req.user.is_authenticated:
 
 		if req.user.is_staff:
@@ -351,3 +353,44 @@ def edit_profile(req):
 	student.save()
 	user.save()
 	return HttpResponseRedirect(reverse('core:user_profile_view'))
+
+
+def get_choices_result(req):  # should be call throught ajax
+	notation = get_object_or_404(NotationHistory, pk=req.GET['notation'])
+	question = notation.question
+	stud_choice = notation.choice
+	return render(req, 'core/question_result.html', {
+		'question': question,
+		'choices': question.choicies.all(),
+		'u_choice': stud_choice,
+		'link_len': len(question.image_link),
+		'good_choice': True if stud_choice.is_correct is True else False
+	})
+
+
+def get_student_response(req,student):
+	stud = Student.objects.get(pk=student)
+	notaitons = stud.score.all()
+	result = []
+	for notation in notaitons:
+		result.append({
+			'question':notation.question.text,
+			'date': notation.question.scheduled_day.strftime('%m-%d-%Y'),
+			'question_id': notation.question.id,
+			'notation_id': notation.id
+		})
+	return JsonResponse(json.dumps(result), safe=False)
+
+
+def scoring(req):
+	stud = req.user.student
+	notaitons = stud.score.all()
+	result = []
+	for notation in notaitons:
+		result.append({
+			'question': notation.question.text,
+			'date': notation.question.scheduled_day.strftime('%m-%d-%Y'),
+			'question_id': notation.question.id,
+			'notation_id': notation.id
+		})
+	return render(req, 'core/scoring.html',{'data':result})

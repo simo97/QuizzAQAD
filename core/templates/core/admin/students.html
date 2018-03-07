@@ -7,7 +7,6 @@
 
 <div class="row">
     <div class="col-lg-10">Students</div>
-    <div class=" col-lg-2"><button class="btn btn-success">Add Student</button></div>
 </div>
 {% endblock %}
 
@@ -15,6 +14,40 @@
 
 
 <section class="row">
+    {% if list_students.has_other_pages %}
+    <nav aria-label="Page navigation example">
+
+      <ul class="pagination">
+        {% if list_students.has_previous %}
+
+          <li class="page-item"><a class="page-link" href="?page={{ list_students.previous_page_number }}">&laquo;</a></li>
+        {% else %}
+          <li class=" page-item"><span>&laquo;</span></li>
+        {% endif %}
+
+        {% for i in list_students.paginator.page_range %}
+
+          {% if list_students.number == i %}
+            <li class="active page-item">
+                <span class=" page-link">{{ i }} <span class=" sr-only">(current)</span></span>
+            </li>
+          {% else %}
+            <li class="page-item"><a class="page-link" href="?page={{ i }}">{{ i }}</a></li>
+          {% endif %}
+
+        {% endfor %}
+
+        {% if list_students.has_next %}
+          <li class="page-item">
+              <a class="page-link" href="?page={{ list_students.next_page_number }}"> &raquo; </a>
+          </li>
+        {% else %}
+          <li class=" page-item"><span class="page-link">&raquo; </span></li>
+        {% endif %}
+
+      </ul>
+    </nav>
+    {% endif %}
     <div class="col-md-12 table-responsive">
         <table class="table table-bordered table-striped table-condensed">
             <tr>
