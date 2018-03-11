@@ -12,3 +12,8 @@ class QuestionForm(ModelForm):
 	class Meta:
 		model = Question
 		fields = ['text','image_link','topic','tags','scheduled_day']
+
+class StudentForm(ModelForm):
+	class Meta:
+		model = Student
+		fields = []

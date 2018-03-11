@@ -1,0 +1,104 @@
+{% extends "core/layout.html" %}
+{% load crispy_forms_tags %}
+
+{% load i18n %}
+{% load account socialaccount %}
+
+{% block head_title %}{% trans "Sign In" %}{% endblock %}
+
+{% load static %}
+
+{% block custom_style %}
+<link href="{% static 'core/css/signin.css' %}" rel="stylesheet">
+<style>
+    .navbar {
+        background-color: #55a9e0 !important;
+        height: 75px;
+    }
+
+    .contain {
+        margin-top: 50px;
+        width: 40%;
+        margin-left: auto;
+        margin-right: auto;
+    }
+    body {
+        background-image: url(http://www.powerpointhintergrund.com/uploads/kids-background-18.jpg);
+        background-size: cover;
+        background-repeat: no-repeat;
+    }
+
+    .form-control{
+        border: 0px;
+        border-bottom: 1px green solid;
+        border-radius: 0px 0px 10px 10px;
+    }
+
+</style>
+{% endblock %}
+
+{% block title %}Sign in {% endblock %}
+
+{% block nav_menu %}
+<ul class="navbar-nav mr-auto">
+            {% if user.is_staff %}
+          <li class="nav-item ">
+            <a class="nav-link" href="{% url 'core:dashboard_admin_view' %}">Board <span class="sr-only">(current)</span></a>
+          </li>
+            {% endif %}
+            {% if user.is_authenticated  %}
+            <li class="nav-item">
+                <a class="nav-link" href="{% url 'core:user_profile_view' %}">Profile</a>
+              </li>
+            <li class="nav-item ">
+                <a class="nav-link" href="{% url 'core:submit_comment' %}">Comments</a>
+              </li>
+
+            {% endif %}
+            <li class="nav-item">
+                <a class="nav-link active" href="{% url 'core:about_view' %}">About</a>
+              </li>
+        </ul>
+{% endblock %}
+
+{% block right_nav %}
+{% if user.is_authenticated  %}
+    <li class="nav-item">
+                <a class="nav-link" href="{% url 'core:logout_view' %}">Log out</a>
+            </li>
+{% else %}
+<li class="nav-item">
+    <a class="nav-link"  href="{% url 'account_login' %}" >Sign In</a>
+</li>
+<li class="nav-item">
+    <a class="nav-link" href="{% url 'account_signup' %}">Join Us</a>
+</li>
+            {% endif %}
+
+{% endblock %}
+
+{% block layout %}
+<div class="contain">
+  <h1>{% trans "Confirm E-mail Address" %}</h1>
+
+{% if confirmation %}
+
+{% user_display confirmation.email_address.user as user_display %}
+
+<p>{% blocktrans with confirmation.email_address.email as email %}Please confirm that <a href="mailto:{{ email }}">{{ email }}</a> is an e-mail address for user {{ user_display }}.{% endblocktrans %}</p>
+
+<form method="post" action="{% url 'account_confirm_email' confirmation.key %}">
+{% csrf_token %}
+    <button type="submit">{% trans 'Confirm' %}</button>
+</form>
+
+{% else %}
+
+{% url 'account_email' as email_url %}
+
+<p>{% blocktrans %}This e-mail confirmation link expired or is invalid. Please <a href="{{ email_url }}">issue a new e-mail confirmation request</a>.{% endblocktrans %}</p>
+
+{% endif %}
+
+</div>
+{% endblock %}

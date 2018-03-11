@@ -1,34 +1,7 @@
 {% extends 'core/layout.html' %}
 {% load static %}
+{% load account %}
 
-{% block right_nav %}
-{% if user.is_authenticated  %}
-<li class="nav-item">
-    <div class="dropdown">
-      <button type="button " class=" drop_btn btn btn-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-        {{ request.user.username }}<span class="badge badge-success">{{ request.user.student.current_score }}</span>
-      </button>
-      <div class="dropdown-menu">
-        <a class="dropdown-item" href="{% url 'core:user_profile_view' %}"><i class="icon ion-person"></i> &nbsp My profile</a>
-        <a class="dropdown-item" href="{% url 'core:scoring_view' %}"><i class="icon ion-trophy"></i> &nbsp My score</a>
-        <div class="dropdown-divider"></div>
-        <a class="dropdown-item" href="{% url 'core:logout_view' %}"><i class="icon ion-log-out"></i> &nbsp Logout</a>
-      </div>
-    </div>
-</li>
-<li class="nav-item">
-    <a class="nav-link" href="#">&nbsp</a>
-</li>
-{% else %}
-            <li class="nav-item">
-                <a class="nav-link" href="{% url 'core:signin_view' %}">Sign In</a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link" href="{% url 'core:register_view' %}">Join Us</a>
-            </li>
-            {% endif %}
-
-{% endblock %}
 
 {% block custom_style %}
 <link rel="stylesheet"
@@ -131,6 +104,11 @@
         height: 50px;
         width: 50px;
         border-radius: 25px;
+    }
+
+    .small_img{
+        height: 200px;
+        width: 200px;
     }
 
 </style>
@@ -281,18 +259,45 @@
             </div>
         </div>
 
-        <!-- div class="col-md-6 col-lg-6 col-xm-12 col-xs-12 ">
+        <div class="col-md-6 col-lg-6 col-xm-12 col-xs-12 ">
             <div class="con">
                 <div class="row">
                     <div class="col-lg-1">
                         <img src="{% static 'core/images/002-info.png' %}" class="small_icon" />
                     </div>
                     <div class="col-lg-10">
-                        <center class="font-weight-bold"><h2>Question of the month</h2></center>
+                        <center class="font-weight-bold"><h2>Previous questions</h2></center>
                     </div>
                 </div>
+                {% if user.is_authenticated %}
+                <div class="row">
+                    <div class="col-md-12"><span onclick="prev_question()"><i class="icon ion-chevron-left"></i><span id="prev_day">&nbsp;{{ prev_day  }}</span> </span></div>
+                </div>
+                <div class="row">
+                    <div class="col-md-12">
+                        <p class="h4 bold"><center><Strong id="question_last">Loading last question !!!</Strong></center></p>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-12" id="image">
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-3 col-sm-3"><span class="badge badge-success" id="topic"></span></div>
+                    <div class="col-md-3 col-sm-3"><i class="icon ion-thumbsup"></i><span id="likes"></span></div>
+                    <div class="col-md-3 col-sm-3"><i class="icon ion-thumbsdown"></i><span id="dislikes"></span></div>
+                    <div class="col-md-3 col-sm-3"><span class="badge badge-primary" id="tags"></span></div>
+                </div>
+                <input type="hidden" id="prev_val" value="{{prev_id}}" />
+                {% else %}
+                <div class="row">
+                    <div class="col-md-12">
+                        <center ><b>You need to login to view previous question  !!!</b></center>
+                    </div>
+                </div>
+                {% endif %}
             </div>
-        </div -->
+        </div >
 {% endblock %}
 
 {% block script_js %}
@@ -324,6 +329,49 @@
         });
     }
     {% endif %}
+
+    function prev_question(){
+        var id = $('#prev_val').val()
+        console.log(id)
+        $.get('/previous-question/'+id, function(data){
+
+            data = JSON.parse(data)
+            $('#question_last').html(data.text);
+
+            $('#topic').html(data.topic);
+            $('#tags').html(data.tags);
+            $('#likes').html(data.likes);
+            $('#dislikes').html(data.dislikes);
+            $('#prev_val').val(data.prev_id);
+            $('#prev_day').html(data.prev_day);
+
+            if ( data.image.length > 0 ){
+                img_tag = "<center><img src="+ data.image+" rel='kenny' class='small_img' /></center>";
+                $('#image').html(img_tag)
+            }
+        })
+    }
+
+    $(document).ready(function() {
+
+        // make an ajax call here
+        $.get('{% url 'core:load_previous_question' question.id %}', function(data){
+
+            data = JSON.parse(data)
+            $('#question_last').html(data.text);
+
+            $('#topic').html(data.topic);
+            $('#tags').html(data.tags);
+            $('#likes').html(data.likes);
+            $('#dislikes').html(data.dislikes);
+            if ( data.image.length > 0 ){
+                img_tag = "<center><img src="+ data.image+" rel='kenny' class='small_img' /></center>";
+                $('#image').html(img_tag)
+            }
+        })
+    });
+
+
 
     function chooseFirst(value){
         if(should_choose === false ){
@@ -405,8 +453,37 @@
         $('#choice_value').val(value);
     }
 
+    $('#signin').click(function(){
+        /*$.get({% url 'core:signin_view' %}', function(data){
+
+        })*/
+        $("#modal_body").load('{% url 'account_login' %} ', function(){
+            $('#modal_detail').modal('show');
+            $('input').css('form-control')
+        });
+    });
+
 
 </script>
 {% endblock %}
 
 {% block title %} Welcome to quizz {% endblock %}
+
+{% block modal %}
+
+<div class="modal fade" id="modal_detail"  tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+
+      <div class="modal-content">
+            <div class="modal-header">
+                <span>SignIn form </span>
+            </div>
+            <div class="modal-body container" id="modal_body">
+
+            </div>
+      </div>
+
+  </div>
+</div>
+
+{% endblock %}

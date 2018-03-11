@@ -1,0 +1,104 @@
+{% extends "core/layout.html" %}
+{% load crispy_forms_tags %}
+
+{% load i18n %}
+{% load account socialaccount %}
+
+{% block head_title %}{% trans "Sign In" %}{% endblock %}
+
+{% load static %}
+
+{% block custom_style %}
+<link href="{% static 'core/css/signin.css' %}" rel="stylesheet">
+<style>
+    .navbar {
+        background-color: #55a9e0 !important;
+        height: 75px;
+    }
+
+    .contain {
+        margin-top: 50px;
+        width: 40%;
+        margin-left: auto;
+        margin-right: auto;
+    }
+    body {
+        background-image: url(http://www.powerpointhintergrund.com/uploads/kids-background-18.jpg);
+        background-size: cover;
+        background-repeat: no-repeat;
+    }
+
+    .form-control{
+        border: 0px;
+        border-bottom: 1px green solid;
+        border-radius: 0px 0px 10px 10px;
+    }
+
+</style>
+{% endblock %}
+
+{% block title %}Sign in {% endblock %}
+
+{% block nav_menu %}
+<ul class="navbar-nav mr-auto">
+            {% if user.is_staff %}
+          <li class="nav-item ">
+            <a class="nav-link" href="{% url 'core:dashboard_admin_view' %}">Board <span class="sr-only">(current)</span></a>
+          </li>
+            {% endif %}
+            {% if user.is_authenticated  %}
+            <li class="nav-item">
+                <a class="nav-link" href="{% url 'core:user_profile_view' %}">Profile</a>
+              </li>
+            <li class="nav-item ">
+                <a class="nav-link" href="{% url 'core:submit_comment' %}">Comments</a>
+              </li>
+
+            {% endif %}
+            <li class="nav-item">
+                <a class="nav-link active" href="{% url 'core:about_view' %}">About</a>
+              </li>
+        </ul>
+{% endblock %}
+
+{% block right_nav %}
+{% if user.is_authenticated  %}
+    <li class="nav-item">
+                <a class="nav-link" href="{% url 'core:logout_view' %}">Log out</a>
+            </li>
+{% else %}
+<li class="nav-item">
+    <a class="nav-link"  href="{% url 'account_login' %}" >Sign In</a>
+</li>
+<li class="nav-item">
+    <a class="nav-link" href="{% url 'account_signup' %}">Join Us</a>
+</li>
+{% endif %}
+
+{% endblock %}
+
+{% block layout %}
+<div class="contain">
+  <div class="row">
+    <div class="col-md-12" >
+      <h1>{% trans "Sign In" %}</h1>
+    </div>
+  </div>
+  <div class="row" >
+    <div class="col-md-12">
+      <form class="login" method="POST" action="{% url 'account_login' %}">
+        {% csrf_token %}
+        {{ form|crispy }}
+        {% if redirect_field_value %}
+        <input type="hidden" name="{{ redirect_field_name }}" value="{{ redirect_field_value }}" />
+        {%  endif %}
+        <a class="button secondaryAction " href="{% url 'account_reset_password' %}">{% trans "Forgot Password?" %}</a>
+        <button class="primaryAction btn btn-success" type="submit">{% trans "Sign In" %}</button>
+      </form>
+    </div>
+  </div>
+
+
+
+</div>
+{% endblock %}

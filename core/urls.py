@@ -24,6 +24,7 @@ urlpatterns = [
 	url(r'^student-response/(?P<student>[0-9]+)/$', views.get_student_response, name='response_sudent'),
 	url(r'^question-stats/$', views.get_choices_result, name='stat_student'),
 	url(r'^scoring/$',views.scoring, name='scoring_view'),
+	url(r'^previous-question/(?P<current_id>[0-9]+)/$', views.get_previous_question, name='load_previous_question'),
 	url(r'^dashboard/$', admin_views.dashboard, name='dashboard_admin_view'),
 	url(r'^dashboard/questions/$', admin_views.questions, name='questions_admin_view'),
 	url(r'^dashboard/questions/edit/$', admin_views.edit_question, name='edit_questions_admin_view'),

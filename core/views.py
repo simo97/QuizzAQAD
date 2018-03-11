@@ -5,13 +5,16 @@ from django.contrib.auth.models import User
 # Create your views here. API are here
 from django.contrib.auth import authenticate, login, logout
 from django.shortcuts import redirect
-from django.contrib.auth.decorators import login_required
+from django.contrib.auth.decorators import login_required,user_passes_test
 from django.http import HttpResponseRedirect, HttpResponse, JsonResponse
 from django.db.models import Sum
 from django.http import Http404
 from django.core.files.storage import FileSystemStorage
 from django.core.exceptions import ObjectDoesNotExist,MultipleObjectsReturned
 from django.core.mail import EmailMessage
+from allauth.account.decorators import verified_email_required
+from core.decorators import user_account_completed
+from django.conf import settings
 import random
 import datetime
 import operator
@@ -31,12 +34,31 @@ from datetime import datetime as dt
 # todo : check the leaderboard algorithm
 # todo : check question of the month algorithm
 # todo : add success message after operations
+
+# todo : add ability to see previous questions
+# todo : refere someone
 """
  To generate the leaderboard we should:
  1) get all the user who has made choice in the current month
  2) put all ther notation history object of the month in a dictionary { 'user' : [sum_of_month_notation]} populating by user's id
  3) sort all the dictionnary for displaying
 """
+
+
+def get_previous_question(request,current_id):
+	question = Question.objects.filter(pk__lt=current_id).last()
+	p =Question.objects.get(pk=question.id)
+	return JsonResponse(json.dumps({
+			'text': question.text,
+			'id': question.id,
+			'likes': question.likes,
+			'dislikes': question.dislikes,
+			'topic': question.topic,
+			'tags': question.tags,
+			'image':question.image_link,
+			'prev_id': p.id,
+			'prev_day': p.scheduled_day.strftime('%m-%d-%Y')
+		}), safe=False)
 
 
 def handle_upload(req):
@@ -116,8 +138,10 @@ def user_is_staff(user):
 def ask(req):
 	"""" must load the question of the day. The question that has been schedule for today """
 	try:
-		question = get_object_or_404(Question, scheduled_day=datetime.date.today())
-		list_question = get_object_or_404(Question, scheduled_day=datetime.date.today()).choicies.all()
+		question = Question.objects.filter(scheduled_day=datetime.date.today()).first()
+		list_question = question.choicies.all()
+		question_prev = Question.objects.filter(pk__lt=question.id).last()
+		p = Question.objects.get(pk=question.id - 1)
 	except Http404:
 		return render(req, 'core/vote.html')
 	""" verify if the current user always has choose """
@@ -139,7 +163,9 @@ def ask(req):
 				'allowed': False,
 				'message': "An admin cannot respond to question",
 				'link_len': len(question.image_link),
-				'tags': tags
+				'tags': tags,
+				'prev_id': p.id,
+				'prev_day': p.scheduled_day.strftime('%m-%d-%Y')
 			})
 		student = req.user.student
 		c = NotationHistory.objects.filter(question=question, student=student).count()
@@ -155,7 +181,9 @@ def ask(req):
 			'allowed': allowed,
 			'message': message,
 			'link_len': len(question.image_link),
-			'tags': tags
+			'tags': tags,
+			'prev_id': p.id,
+			'prev_day': p.scheduled_day.strftime('%m-%d-%Y')
 		})
 	else:
 		allowed = False,
@@ -170,11 +198,14 @@ def ask(req):
 			'allowed': allowed,
 			'message': message,
 			'link_len': len(question.image_link),
-			'tags': tags
+			'tags': tags,
+			'prev_id': p.id,
+			'prev_day': p.scheduled_day.strftime('%m-%d-%Y')
 		})
 
 
-@login_required
+@verified_email_required
+@user_passes_test(user_account_completed, login_url=settings.USER_PASS_TEST_REDIRECT)
 def choose(req):
 	question = get_object_or_404(Question, pk=int(req.POST['question_id']))
 	choice = get_object_or_404(Choice, pk=int(req.POST['choice']))
@@ -294,7 +325,7 @@ def account_activation(req,validation_str):
 		return render(req, 'core/validation_fail.html', {'reason': 'Unable to find student information'})
 
 
-@login_required
+@verified_email_required
 def get_profile(req):
 	if req.user.is_staff:
 		return HttpResponseRedirect(reverse('core:profile_admin_view'))
@@ -310,7 +341,7 @@ def get_profile(req):
 		return render(req, 'core/404.html',)
 
 
-@login_required
+@verified_email_required
 def logout_user(req):
 	logout(req)
 	return HttpResponseRedirect(reverse('core:home'))
@@ -324,7 +355,7 @@ def check_exist(request,value):
 	return True if request.POST[value] else False
 
 
-@login_required
+@verified_email_required
 def edit_profile(req):
 	"""
 	:param req:
@@ -355,6 +386,8 @@ def edit_profile(req):
 	return HttpResponseRedirect(reverse('core:user_profile_view'))
 
 
+@verified_email_required
+@user_passes_test(user_account_completed, login_url=settings.USER_PASS_TEST_REDIRECT)
 def get_choices_result(req):  # should be call throught ajax
 	notation = get_object_or_404(NotationHistory, pk=req.GET['notation'])
 	question = notation.question
@@ -368,6 +401,8 @@ def get_choices_result(req):  # should be call throught ajax
 	})
 
 
+@verified_email_required
+@user_passes_test(user_account_completed, login_url=settings.USER_PASS_TEST_REDIRECT)
 def get_student_response(req,student):
 	stud = Student.objects.get(pk=student)
 	notaitons = stud.score.all()
@@ -382,6 +417,8 @@ def get_student_response(req,student):
 	return JsonResponse(json.dumps(result), safe=False)
 
 
+@verified_email_required
+@user_passes_test(user_account_completed, login_url=settings.USER_PASS_TEST_REDIRECT)
 def scoring(req):
 	stud = req.user.student
 	notaitons = stud.score.all()
