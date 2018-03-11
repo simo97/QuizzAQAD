@@ -162,7 +162,8 @@
 {% block layout %}
 <div class="contained">
     <div class=" col-lg-12">
-        <h1>My profile</h1>
+        <h1>My profile </h1>
+        <h5 style="color:green" >You should set the first name and the last name to use our service</h5>
     </div>
     <form action="{% url 'core:edit_profile' %}" method="post" enctype="multipart/form-data">{% csrf_token %}
     <div class="col-lg-12  " >

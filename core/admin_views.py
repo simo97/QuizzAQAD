@@ -32,7 +32,7 @@ def dashboard(request):
 
 @login_required
 def questions(request):
-	question_list = Question.objects.all().order_by('-id')
+	question_list = Question.objects.all().order_by('id')
 	page = request.GET.get('page', 1)
 	paginator = Paginator(question_list, 15)
 

@@ -39,10 +39,16 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+	'django.contrib.sites',
+    'crispy_forms',
+	'allauth',
+    'allauth.account',
+    'allauth.socialaccount',
     'core'
 ]
 
 
+LOGIN_REDIRECT_URL = '/'
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -59,7 +65,7 @@ ROOT_URLCONF = 'quiz.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': [os.path.join(BASE_DIR), 'templates'],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -125,12 +131,20 @@ USE_L10N = True
 
 USE_TZ = True
 
+AUTHENTICATION_BACKENDS = [
+    # Needed to login by username in Django admin, regardless of `allauth`
+    'django.contrib.auth.backends.ModelBackend',
+
+    # `allauth` specific authentication methods, such as login by e-mail
+    'allauth.account.auth_backends.AuthenticationBackend',
+
+]
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/1.10/howto/static-files/
 
 
-LOGIN_URL = '/login/'
+LOGIN_URL = '/accounts/login/'
 
 STATICFILES_STORAGE = 'whitenoise.django.GzipManifestStaticFilesStorage'
 
@@ -156,3 +170,11 @@ DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
 DATE_INPUT_FORMATS = ['%d-%m-%Y']
 
 SITE_ID = 1
+
+CRISPY_TEMPLATE_PACK = 'bootstrap4'
+ACCOUNT_ADAPTER = 'core.provider.AcountCustomProvider'
+#ACCOUNT_EMAIL_VERIFICATION='optional'
+#ACCOUNT_EMAIL_REQUIRED=False
+
+USER_PASS_TEST_REDIRECT = '/profile'
+ACCOUNT_AUTHENTICATION_METHOD = 'username_email'
