@@ -162,7 +162,7 @@ def ask(req):
 				'leader_board': leaderboard_generator_v2()[:5],
 				'allowed': False,
 				'message': "An admin cannot respond to question",
-				'link_len': len(question.image_link),
+				'link_len': len(question.image_link) if question.image_link is not None else None,
 				'tags': tags,
 				'prev_id': p.id,
 				'prev_day': p.scheduled_day.strftime('%m-%d-%Y')
@@ -341,7 +341,7 @@ def get_profile(req):
 		return render(req, 'core/404.html',)
 
 
-@verified_email_required
+@login_required
 def logout_user(req):
 	logout(req)
 	return HttpResponseRedirect(reverse('core:home'))

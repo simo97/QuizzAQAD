@@ -1,0 +1,145 @@
+{% extends 'core/admin/admin_base.html' %}
+
+
+{% block modal %}
+
+<div class="modal bd-example-modal-lg fade" id="modal_detail"  tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg" role="document">
+
+      <div class="modal-content">
+            <div class="modal-header">
+                <span>Question's details</span>
+            </div>
+            <div class="modal-body ">
+                <div class="container-fluid"  id="modal_body">
+
+                </div>
+            </div>
+            <div class="modal-footer">
+            </div>
+      </div>
+
+  </div>
+</div>
+
+{% endblock %}
+
+
+
+{% block  content %}
+
+{% if data_error %}
+<div class="row">
+    <div class="alert alert-danger">{{ data_error }}</div>
+</div>
+{% endif %}
+<section class="row">
+    <div class="col-md-6">
+        <div class="row">
+            <div class="col-md-12">
+                <strong class="badge badge-success">Topic : </strong> {{ question.topic }}
+            </div>
+            <div class="col-md-12">
+                <strong class="badge badge-success" >Text : </strong> {{ question.text }}
+            </div>
+            <div class="col-md-6">
+                <strong class="badge badge-success">tags : </strong>{{ question.tags }}
+            </div>
+            <div class="col-md-6">
+                <strong class="badge badge-success">Scheduled day : </strong>{{ question.scheduled_day }}
+            </div>
+            <div class="col-md-12">
+                <ul class="list-group">
+                    <li class="list-group-item active">Choices <!-- button class="btn btn-warning">click</button --></li>
+                    {% for choice in choices %}
+                    <li class="list-group-item">
+                            <div class="col-md-10">
+                                <strong>Choice : </strong> {{ choice }} {% if choice.is_correct %} <strong class="badge badge-success">Correct answer </strong> {% endif %}
+                            </div>
+                            <div class="col-md-2">
+                                <button onclick="detail({{ choice.id }})" class="btn btn-primary">Edit</button>
+                            </div>
+                    </li>
+                    {% endfor %}
+                </ul>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-6">
+        <div class="row">
+            <div class="col-lg-12 col-md-12 col-sm-12">
+                <canvas id="myChart" width="450" height="300"></canvas>
+                <script>
+                    var ctx = document.getElementById('myChart').getContext('2d');
+                    var chart = new Chart(ctx, {
+                        // The type of chart we want to create
+                        type: 'doughnut',
+
+                        // The data for our dataset
+                        data: {
+                            labels: [{% for choice in choices %}"{{ choice }}",{% endfor %}],
+                            datasets: [{
+                                label: "Questions stats",
+                                data: [
+                                    {{ choice_Val_1 }},
+                                    {{ choice_Val_2 }},
+                                    {{ choice_Val_3 }},
+                                    {{ choice_Val_4 }},
+                                ],
+                                backgroundColor: [
+                                    'rgb(255, 99, 132)',
+                                    'rgb(54, 162, 235)',
+                                    'rgb(255, 206, 86)',
+                                    'rgb(75, 192, 192)',
+                                ]
+                            }]
+                        },
+
+                        // Configuration options go here
+                        options: {}
+                    });
+                </script>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}
+
+{% block script_js %}
+<script>
+    $('#btn_upload').click(function() {
+        $('#modal_win').modal('show');
+    });
+
+    function openDetail(id){
+
+    }
+    function detail(id){
+        console.log(id)
+        var url = "{% url 'core:questions_admin_edit_choice_view'  %}?choice_id="+parseInt(id)
+        console.log(url)
+        $( "#modal_body" ).load(url, function(){
+            $('#modal_detail').modal('show');
+        });
+    }
+
+    function edit(url){
+        $( "#modal_body" ).load(url, function(){
+            $('#modal_detail').modal('show');
+            $('#modal_detail input').addClass('form-control');
+            $('#modal_detail textarea').addClass('form-control');
+        });
+    }
+
+</script>
+
+{% endblock %}
+
+{% block module_title %}
+<div class="row">
+    <div class="col-lg-10">Choicies detail</div>
+</div>
+
+{% endblock %}
+
+{% block is_active_1 %}active{% endblock %}

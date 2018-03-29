@@ -1,6 +1,6 @@
 from django import forms
 from django.forms import ModelForm
-from core.models import Student, Question
+from core.models import Student, Question, Choice
 
 class AdminProfileForn(forms.Form):
 	class Meta:
@@ -13,7 +13,11 @@ class QuestionForm(ModelForm):
 		model = Question
 		fields = ['text','image_link','topic','tags','scheduled_day']
 
-class StudentForm(ModelForm):
+
+
+
+class ChoiceForm(ModelForm):
 	class Meta:
-		model = Student
-		fields = []
+		model = Choice
+		fields = ['text','is_correct']
+

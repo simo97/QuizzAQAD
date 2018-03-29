@@ -26,15 +26,17 @@
   </div>
 </div>
 
-<div class="modal fade" id="modal_detail"  tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-  <div class="modal-dialog" role="document">
+<div class="modal bd-example-modal-lg fade" id="modal_detail"  tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg" role="document">
 
       <div class="modal-content">
             <div class="modal-header">
                 <span>Question's details</span>
             </div>
-            <div class="modal-body container" id="modal_body">
+            <div class="modal-body ">
+                <div class="container-fluid"  id="modal_body">
 
+                </div>
             </div>
             <div class="modal-footer">
             </div>
@@ -100,7 +102,7 @@
     </nav>
     {% endif %}
 
-    <div class="col-md-12 table-responsive">
+    <div class="col-md-11 table-responsive">
         <table class="table table-bordered table-striped table-condensed">
             <tr>
                 <th>Num</th>
@@ -118,7 +120,7 @@
                 <td>{{ question.text }}</td>
                 <td>{{ question.tags }}</td>
                 <td>{{ question.scheduled_day }}</td>
-                <td><button onclick="detail({{ question.id }})" class="btn btn-primary">Details</button></td>
+                <td><a href="{% url 'core:question_detail_view'  %}?question_id={{question.id}}"  class="btn btn-primary">Details</a></td>
                 <td><button onclick="edit('{% url 'core:edit_questions_admin_view'  %}?question={{question.id}}  ')" class="btn btn-warning">Edit</button></td>
             </tr>
             {% endfor %}
@@ -194,6 +196,7 @@
             $('#modal_detail textarea').addClass('form-control');
         });
     }
+
 </script>
 
 {% endblock %}

@@ -30,11 +30,15 @@ urlpatterns = [
 	url(r'^dashboard/questions/edit/$', admin_views.edit_question, name='edit_questions_admin_view'),
 	url(r'^dashboard/questions/detail/$', admin_views.detail_question, name='question_detail_view'),
 	url(r'^dashboard/questions/upload/$', admin_views.upload, name='questions_admin_upload_view'),
+	url(r'^dashboard/choice/edit/$', admin_views.edit_choice, name='questions_admin_edit_choice_view'),
 	url(r'^dashboard/categories/$', admin_views.categories, name='categories_admin_view'),
 	url(r'^dashboard/categories/add/$', admin_views.add_categorie, name='categories_add_admin_view'),
 	url(r'^dashboard/comments/$', admin_views.comments, name='comments_admin_view'),
 	url(r'^dashboard/students/$', admin_views.students, name='students_admin_view'),
 	url(r'^dashboard/profile/$', admin_views.dash_profile, name='profile_admin_view'),
 	url(r'^dashboard/about/$', admin_views.edit_about, name='about_admin_view'),
-	url(r'^dashboard/about/edit/(?P<sett>[a-z]+)/', admin_views.edit_setting, name='edit_setting')
+	url(r'^dashboard/about/edit/(?P<sett>[a-z]+)/', admin_views.edit_setting, name='edit_setting'),
+    url(r'^dashboard/student/export/(?P<id>[0-9]+)/$', admin_views.export_user, name='export_one_student'),
+    url(r'^dashboard/student/export/all/$', admin_views.export_users, name='export_all_student')
+
 ]
