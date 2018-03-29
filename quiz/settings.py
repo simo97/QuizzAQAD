@@ -22,11 +22,11 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # See https://docs.djangoproject.com/en/1.10/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'bcmw3)wl&lx=*!3ls_w&v9n%sqw^_*-7jleee2he6hj9w9@#ta'
+#SECRET_KEY = 'bcmw3)wl&lx=*!3ls_w&v9n%sqw^_*-7jleee2he6hj9w9@#ta'
 
 # SECURITY WARNING: don't run with debug turned on in production!
 
-DEBUG = True
+#DEBUG = True
 
 
 ALLOWED_HOSTS = []
@@ -85,7 +85,7 @@ WSGI_APPLICATION = 'quiz.wsgi.application'
 
 # Database
 # https://docs.djangoproject.com/en/1.10/ref/settings/#databases
-"""
+
 SECRET_KEY = config('SECRET_KEY')
 DEBUG = config('DEBUG', default=False, cast=bool)
 DATABASES = {
@@ -99,7 +99,7 @@ DATABASES = {
         'ENGINE': 'django.db.backends.sqlite3',
         'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
     }
-}
+}"""
 
 # Password validation
 # https://docs.djangoproject.com/en/1.10/ref/settings/#auth-password-validators
@@ -162,20 +162,20 @@ STATICFILES_DIRS = (
 )
 
 # for email sending
-#EMAIL_HOST_PASSWORD = config('EMAIL_PASSWORD')
-#EMAIL_HOST_USER = config('HOST_USER')
-#EMAIL_HOST = config('EMAIL_HOST') # smtp.gmail.com
-#EMAIL_PORT = config('HOST_PORT') # 587
-#EMAIL_USE_TLS = True
-#DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
-
-
-EMAIL_HOST_PASSWORD = '693539419tchonang'
-EMAIL_HOST_USER = 'simoadonis@gmail.com'
-EMAIL_HOST = 'smtp.gmail.com'
-EMAIL_PORT = 587
+EMAIL_HOST_PASSWORD = config('EMAIL_PASSWORD')
+EMAIL_HOST_USER = config('HOST_USER')
+EMAIL_HOST = config('EMAIL_HOST') # smtp.gmail.com
+EMAIL_PORT = config('HOST_PORT') # 587
 EMAIL_USE_TLS = True
 DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
+
+
+#EMAIL_HOST_PASSWORD = '693539419tchonang'
+#EMAIL_HOST_USER = 'simoadonis@gmail.com'
+#EMAIL_HOST = 'smtp.gmail.com'
+#EMAIL_PORT = 587
+#EMAIL_USE_TLS = True
+#DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
 
 DATE_INPUT_FORMATS = ['%d-%m-%Y']
 
