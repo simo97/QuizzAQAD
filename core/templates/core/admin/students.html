@@ -10,7 +10,7 @@
 
     <div class="col-lg-2">
         <a href="{% url 'core:export_all_student' %}" class="btn btn-success"  class="btn btn-primary" >
-        <i class="icon ion-download" ></i>Export data
+        <i class="fa fa-cloud-download-alt" ></i> &nbsp; Export data
         </a>
     </div>
 </div>
@@ -72,7 +72,7 @@
                     <td>{{ stud.user.last_name }}</td>
                     <td>{{ stud.user.email }}</td>
                     <td>{{ stud.current_score }}</td>
-                    <td><a target="_blank" href="{% url 'core:export_one_student' stud.id %}" ><button class="btn btn-primary">Export</button></a></td>
+                    <td><a target="_blank" href="{% url 'core:export_one_student' stud.id %}" ><button class="btn btn-primary"><i class="fa fa-cloud-download-alt" ></i> &nbsp;Export</button></a></td>
                     <!--td><button class="btn btn-danger">Delete</button></td -->
                 </tr>
                 {% endfor %}

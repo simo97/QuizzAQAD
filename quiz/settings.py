@@ -29,7 +29,11 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 #DEBUG = True
 
 
+<<<<<<< HEAD
 ALLOWED_HOSTS = ['quizzaquad.herokuapp.com']
+=======
+ALLOWED_HOSTS = ['localhost','127.0.0.1']
+>>>>>>> development
 
 
 # Application definition

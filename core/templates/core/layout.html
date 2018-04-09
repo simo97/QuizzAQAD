@@ -26,6 +26,17 @@
     <!-- Custom styles for this template -->
     <link href="{% static 'core/css/dashboard.css' %}" rel="stylesheet">
     <style>
+        .nav-item:hover{
+        border: solid 1px;
+        border-color: white;
+        border-radius: 25px;
+        background-color:white;
+
+    }
+
+    .nav-link:hover{
+        color: #55a9e0 !important
+    }
       .footer {
           position:absolute;
           left: 0;
@@ -81,9 +92,9 @@
                 </button>
                 <div class="dropdown-menu">
                   <a class="dropdown-item" href="{% url 'core:user_profile_view' %}"><i class="fa fa-user"></i> &nbsp My profile</a>
-                  <a class="dropdown-item" href="{% url 'core:scoring_view' %}"><i class="icon ion-trophy"></i> &nbsp My score</a>
+                  <a class="dropdown-item" href="{% url 'core:scoring_view' %}"><i class="fa fa-trophy"></i> &nbsp My score</a>
                   <div class="dropdown-divider"></div>
-                  <a class="dropdown-item" href="{% url 'core:logout_view' %}"><i class="icon ion-log-out"></i> &nbsp Logout</a>
+                  <a class="dropdown-item" href="{% url 'core:logout_view' %}"><i class="fa fa-sign-out-alt"></i> &nbsp Logout</a>
                 </div>
               </div>
           </li>

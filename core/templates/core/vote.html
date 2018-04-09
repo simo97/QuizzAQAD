@@ -8,6 +8,17 @@
   href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.5.2/animate.min.css">
 
 <style>
+    .nav-item:hover{
+        border: solid 1px;
+        border-color: white;
+        border-radius: 25px;
+        background-color:white;
+
+    }
+
+    .nav-link:hover{
+        color: #55a9e0 !important
+    }
     .navbar {
         background-color: #55a9e0 !important;
         height: 75px;
@@ -271,7 +282,7 @@
                 </div>
                 {% if user.is_authenticated %}
                 <div class="row">
-                    <div class="col-md-12"><span onclick="prev_question()"><i class="icon ion-chevron-left"></i><span id="prev_day">&nbsp;{{ prev_day  }}</span> </span></div>
+                    <div class="col-md-12"><span onclick="prev_question()"><i class="fa fa-chevron-left"></i><span id="prev_day">&nbsp;{{ prev_day  }}</span> </span></div>
                 </div>
                 <div class="row">
                     <div class="col-md-12">
@@ -284,8 +295,8 @@
                 </div>
                 <div class="row">
                     <div class="col-md-3 col-sm-3"><span class="badge badge-success" id="topic"></span></div>
-                    <div class="col-md-3 col-sm-3"><i class="icon ion-thumbsup"></i><span id="likes"></span></div>
-                    <div class="col-md-3 col-sm-3"><i class="icon ion-thumbsdown"></i><span id="dislikes"></span></div>
+                    <div class="col-md-3 col-sm-3"><i class="fa fa-thumbs-up"></i><span id="likes"></span></div>
+                    <div class="col-md-3 col-sm-3"><i class="fa fa-thumbs-down"></i><span id="dislikes"></span></div>
                     <div class="col-md-3 col-sm-3"><span class="badge badge-primary" id="tags"></span></div>
                 </div>
                 <input type="hidden" id="prev_val" value="{{prev_id}}" />

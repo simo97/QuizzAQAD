@@ -120,7 +120,7 @@ def about(r):
 
 def comment(r):
 	if r.method == 'GET':
-		return render(r, 'core/comments.html',{'categories': Categorie.objects.all()})
+		return render(r, 'core/comments.html',{'categories': Categorie.objects.all(), 'setting':Setting.objects.get(pk=1)})
 	elif r.method == 'POST':
 		Comment.objects.create(
 			content=r.POST['content'],
