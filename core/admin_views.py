@@ -161,6 +161,8 @@ def edit_setting(req, sett):
 		setting.footer_right = req.POST['right']
 	if str(sett) == 'mail':
 		setting.mail = req.POST['mail']
+	if str(sett) == 'comment':
+		setting.comments = req.POST['comment']
 	setting.save()
 	return render(req, 'core/admin/about.html', {'setting': setting})
 

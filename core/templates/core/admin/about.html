@@ -16,7 +16,7 @@
         <h3>About page content</h3>
         <form action="{% url 'core:edit_setting' 'about' %}" method="post" >{% csrf_token %}
         <textarea id="about" name="about" >{{ setting.about }}</textarea>
-        <input type="submit" class="btn btn-success">
+        <input type="submit" value="Save" class="btn btn-success">
         </form>
     </div>
 </div>
@@ -25,9 +25,19 @@
          <h3>Email template content</h3>
         <form action="{% url 'core:edit_setting' 'mail' %}" method="post" >{% csrf_token %}
         <textarea id="mail_contain" name="mail" >{{ setting.mail }}</textarea>
-        <input type="submit" class="btn btn-success">
+        <input type="submit" value="Save" class="btn btn-success">
             </form>
     </div>
+</div>
+<div class="row">
+    <div class="col-lg-12 col-md-12 col-sm-12">
+         <h3>Comment page content</h3>
+        <form action="{% url 'core:edit_setting' 'comment' %}" method="post" >{% csrf_token %}
+        <textarea id="comment_contain" name="comment" >{{ setting.comments }}</textarea>
+        <input type="submit" value="Save" class="btn btn-success">
+            </form>
+    </div>
+</div>
     <!-- div class="col-lg-6 col-md-6 col-sm-12">
          <h3>left footer content</h3>
         <form action="{% url 'core:edit_setting' 'left' %}" method="post" >{% csrf_token %}
@@ -120,6 +130,21 @@
 
     tinymce.init({
       selector: '#mail_contain',
+      height: 150,
+      menubar: false,
+      plugins: [
+        'advlist autolink lists link image charmap print preview anchor textcolor',
+        'searchreplace visualblocks code fullscreen',
+        'insertdatetime media table contextmenu paste code help wordcount'
+      ],
+      toolbar: 'insert | undo redo |  formatselect | bold italic backcolor  | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | removeformat | help',
+      content_css: [
+        '//fonts.googleapis.com/css?family=Lato:300,300i,400,400i',
+        '//www.tinymce.com/css/codepen.min.css']
+    });
+
+    tinymce.init({
+      selector: '#comment_contain',
       height: 150,
       menubar: false,
       plugins: [

@@ -98,3 +98,4 @@ class Setting(models.Model):
 	footer_center=models.TextField(null=True, default='center content')
 	footer_right = models.TextField(null=True, default='right content')
 	mail = models.TextField(null=True, default='Mail template')
+	comments = models.TextField(null=True, default='Comment content')

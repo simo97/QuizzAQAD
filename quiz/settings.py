@@ -29,7 +29,7 @@ SECRET_KEY = 'bcmw3)wl&lx=*!3ls_w&v9n%sqw^_*-7jleee2he6hj9w9@#ta'
 DEBUG = True
 
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['localhost','127.0.0.1']
 
 
 # Application definition
